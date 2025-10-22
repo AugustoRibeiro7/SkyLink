@@ -8,18 +8,24 @@ public class Voo {
     private String origem;
     private String destino;
     private LocalDateTime dataVoo;
-    private int duracaoVoo;
-    private int capacidadeVoo;
-    private EstadoVooEnum estado;
+    private int duracaoVoo; //tempo em minutos
+    private CompanhiaAerea companhiaAerea;
+    private int capacidadeVoo; //quantidade de passageiros
+    private EstadoVooEnum estado; //PROGRAMADO,EMBARQUE,DECOLADO,ATRASADO,CANCELADO
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificacao;
 
     //Construtor
-    public Voo(String origem, String destino){
-        this.id = nextId++; //Inicializando ID unico e sequencial
+    public Voo(String origem, String destino, LocalDateTime dataVoo, int duracaoVoo,  CompanhiaAerea companhiaAerea,int capacidadeVoo) {
+        this.id = nextId++; //Inicializando ID único e sequencial
 
         this.origem = origem;
         this.destino = destino;
+        this.dataVoo = dataVoo;
+        this.duracaoVoo = duracaoVoo;
+        this.companhiaAerea = companhiaAerea;
+        this.capacidadeVoo = capacidadeVoo;
+        this.estado = EstadoVooEnum.valueOf("PROGRAMADO");
 
         //Inicializando com a data atual
         this.dataCriacao = LocalDateTime.now();
@@ -27,6 +33,10 @@ public class Voo {
     }
 
     //GETTERS e SETTERS
+    public int getId() {
+        return id;
+    }
+
     public String getOrigem() {
         return origem;
     }

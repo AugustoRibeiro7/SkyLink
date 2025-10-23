@@ -4,10 +4,18 @@ import com.skyLink.aeroporto.dao.VooDAOInterface;
 import com.skyLink.aeroporto.model.Voo;
 
 public class VooDAO implements VooDAOInterface {
+    //armazenamento de Voos
+    private Voo[] voos;
+    private int posicao;
+    private
+
+    //Construtor
+    public VooDAO() {}
 
     @Override
     public void inserir(Voo voo) {
-
+        voos = new Voo[1];
+        voos[0] = voo;
     }
 
     public void atualizar(Voo voo) {}

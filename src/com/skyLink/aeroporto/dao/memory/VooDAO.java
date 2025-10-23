@@ -7,30 +7,54 @@ public class VooDAO implements VooDAOInterface {
     //armazenamento de Voos
     private Voo[] voos;
     private int posicao;
-    private
 
     //Construtor
-    public VooDAO() {}
-
-    @Override
-    public void inserir(Voo voo) {
-        voos = new Voo[1];
-        voos[0] = voo;
-    }
-
-    public void atualizar(Voo voo) {}
-
-    @Override
-    public void deletar(Voo voo) {
-
+    public VooDAO() {
+        this.voos = new Voo[10];
+        this.posicao = 0;
     }
 
     @Override
-    public Voo buscar(Voo voo){
-        return null;
+    public boolean inserir(Voo voo) {
+        if(this.posicao > this.voos.length) {
+            return false;
+        }
+            this.voos[this.posicao] = voo;
+            this.posicao++;
+            return true;
     }
 
+    @Override
+    public boolean atualizar(Voo voo) {
+        return true;
+    }
+
+    @Override
+    public boolean deletar(int idVoo) {
+        if(this.posicao > this.voos.length || this.posicao < 0) {
+            return false;
+        }
+        else if(this.posicao == this.voos.length) {
+            this.voos[this.posicao] = null;
+            return true;
+        }
+        // Movendo conteúdos das posições do vetor para a esquerda, substituindo a posição deletada
+        for(int i = idVoo; i < this.posicao; i++) {
+            this.voos[i] = this.voos[i+1];
+        }
+        this.voos[this.posicao] = null; // Apagando conteúdo da última posição, pois estará duplicado
+
+        this.posicao--; // subtraindo a posição atual do vetor, pois uma foi deletada
+        return true;
+    }
+
+    @Override
+    public Voo buscar(int idVoo){
+        return voos[idVoo];
+    }
+
+    @Override
     public Voo[] listar(){
-        return null;
+        return voos;
     }
 }

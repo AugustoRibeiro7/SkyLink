@@ -1,6 +1,5 @@
 package com.skyLink.aeroporto.dao.memory;
 
-import com.skyLink.aeroporto.dao.PassageiroDAO;
 import com.skyLink.aeroporto.dao.VooDAOInterface;
 import com.skyLink.aeroporto.model.Voo;
 

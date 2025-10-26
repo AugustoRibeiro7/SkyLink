@@ -5,11 +5,12 @@ import java.time.LocalDateTime;
 public class Aeroporto {
     private int id;
     private String nome;
+    private String cidade;
     private String sigla;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAtualizacao;
 
-    public Aeroporto(int id, String nome, String sigla, LocalDateTime dataCriacao, LocalDateTime dataAtualizacao) {
+    public Aeroporto(int id, String nome, String cidade, String sigla, LocalDateTime dataCriacao, LocalDateTime dataAtualizacao) {
         this.id = id;
         this.nome = nome;
         this.sigla = sigla;
@@ -55,5 +56,17 @@ public class Aeroporto {
 
     public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
         this.dataAtualizacao = dataAtualizacao;
+    }
+
+    @Override
+    public String toString() {
+        return "Aeroporto {" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", cidade='" + cidade + '\'' +
+                ", sigla='" + sigla + '\'' +
+                ", criado=" + dataCriacao +
+                ", atualizado=" + dataAtualizacao +
+                '}';
     }
 }

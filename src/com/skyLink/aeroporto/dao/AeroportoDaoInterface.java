@@ -2,7 +2,7 @@ package com.skyLink.aeroporto.dao;
 
 import com.skyLink.aeroporto.model.Aeroporto;
 
-public interface AeroportoDAOInterface {
+public interface AeroportoDaoInterface {
     void salvar(Aeroporto aeroporto);
     Aeroporto buscarPorId(int id);
     Aeroporto[] listarTodos();

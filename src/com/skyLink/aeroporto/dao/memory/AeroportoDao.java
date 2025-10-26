@@ -1,13 +1,13 @@
 package com.skyLink.aeroporto.dao.memory;
 
-import com.skyLink.aeroporto.dao.AeroportoDAOInterface;
+import com.skyLink.aeroporto.dao.AeroportoDaoInterface;
 import com.skyLink.aeroporto.model.Aeroporto;
 
-public class AeroportoDAO implements AeroportoDAOInterface {
+public class AeroportoDao implements AeroportoDaoInterface {
     private Aeroporto[] aeroportos;
     private int contador;
 
-    public AeroportoDAO(int tamanho) {
+    public AeroportoDao(int tamanho) {
         aeroportos = new Aeroporto[tamanho];
         contador = 0;
     }

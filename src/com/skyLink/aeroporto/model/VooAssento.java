@@ -13,7 +13,7 @@ public class VooAssento {
 
     //Construtor
     public VooAssento() {
-        this.id = VooAssento.nextId; //Inicializando ID unico e sequencial
+        this.id = VooAssento.nextId; //Inicializando ID único e sequencial
 
         //Inicializando com a data atual
         this.dataCriacao = LocalDateTime.now();

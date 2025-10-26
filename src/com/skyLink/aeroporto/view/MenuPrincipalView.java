@@ -11,17 +11,20 @@ import java.util.Scanner;
 public class MenuPrincipalView {
 
     private Scanner scanner = new Scanner(System.in);
-    private LoginController loginController;
+
+    private LoginView loginView;
+
     private PassageiroController passageiroController;
     private AeroportoController aeroportoController;
     private CompanhiaAereaController companhiaAereaController;
 
+    // CONSTRUTOR ATUALIZADO
     public MenuPrincipalView(
-            LoginController loginController,
+            LoginView loginView,
             PassageiroController passageiroController,
             AeroportoController aeroportoController,
             CompanhiaAereaController companhiaAereaController) {
-        this.loginController = loginController;
+        this.loginView = loginView;
         this.passageiroController = passageiroController;
         this.aeroportoController = aeroportoController;
         this.companhiaAereaController = companhiaAereaController;
@@ -45,7 +48,8 @@ public class MenuPrincipalView {
                     passageiroController.cadastrarPassageiro();
                     break;
                 case 2:
-                    usuarioLogado = loginController.realizarLogin();
+                    usuarioLogado = loginView.exibirLogin();
+
                     if (usuarioLogado != null) {
                         exibirMenuUsuario(usuarioLogado);
                     }

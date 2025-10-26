@@ -9,8 +9,10 @@ import com.skyLink.aeroporto.dao.memory.PassageiroDao;
 import com.skyLink.aeroporto.dao.memory.AeroportoDao;
 import com.skyLink.aeroporto.dao.memory.CompanhiaAereaDao;
 
+import com.skyLink.aeroporto.model.Aeroporto;
 import com.skyLink.aeroporto.model.Passageiro;
 import com.skyLink.aeroporto.service.LoginService;
+import com.skyLink.aeroporto.view.LoginView;
 import com.skyLink.aeroporto.view.MenuPrincipalView;
 
 import java.time.LocalDate;
@@ -24,18 +26,29 @@ public class Main {
         AeroportoDao aeroportoDao = new AeroportoDao(20);
         CompanhiaAereaDao companhiaAereaDao = new CompanhiaAereaDao(20);
 
-        // Popula um passageiro de teste (para logar sem precisar cadastrar)
+        // Popular um passageiro
         Passageiro pTeste = new Passageiro(
                 1,
                 "Ranieri",
                 LocalDate.of(2002, 12, 10),
                 "123.456.789-00",
-                "ranieri",       // login
-                "senha123",      // senha
+                "ranieri",
+                "senha123",
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
         passageiroDao.salvar(pTeste);
+
+        // Popular um aeroporto
+        Aeroporto aTeste = new Aeroporto(
+                1,
+                "Guarulhos",
+                "Guarulhos",
+                "GRU",
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+        aeroportoDao.salvar(aTeste);
 
         // Cria controllers (passando os DAOs)
         PassageiroController passageiroController = new PassageiroController(passageiroDao);
@@ -46,9 +59,12 @@ public class Main {
         LoginService loginService = new LoginService(passageiroDao);
         LoginController loginController = new LoginController(loginService);
 
+        // Criando o loginView
+        LoginView loginView = new LoginView(loginController);
+
         // Menu principal (passando os controllers)
         MenuPrincipalView menu = new MenuPrincipalView(
-                loginController,
+                loginView,
                 passageiroController,
                 aeroportoController,
                 companhiaAereaController

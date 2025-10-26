@@ -21,7 +21,10 @@ public class LoginView {
         System.out.print("Senha: ");
         String senha = scanner.nextLine();
 
+        // 1. View envia dados para o Controller
         Passageiro passageiro = loginController.login(login, senha);
+
+        // 2. View exibe o resultado
         if (passageiro != null) {
             System.out.println("Login realizado com sucesso! Bem-vindo, " + passageiro.getNome() + "!");
             return passageiro;

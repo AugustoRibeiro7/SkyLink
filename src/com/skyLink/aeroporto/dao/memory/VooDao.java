@@ -49,12 +49,12 @@ public class VooDao implements VooDaoInterface {
     @Override
     public Voo buscar(int idVoo){
         if(idVoo >= this.voos.length || idVoo < 0) {return null;}
-        return voos[idVoo];
+        return this.voos[idVoo];
     }
 
     @Override
     public Voo[] listar(){
         if(this.posicao == 0) {return null;} // se posição for 0, nenhum objeto foi incluído ainda no vetor
-        return voos;
+        return this.voos;
     }
 }

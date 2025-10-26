@@ -9,29 +9,29 @@ public class VooAssentoDao implements VooAssentoDaoInterface {
 
     //Construtor
     public VooAssentoDao() { // Inicializando vetor e posicao
-        vooAssentos = new VooAssento[10];
-        posicao = 0;
+        this.vooAssentos = new VooAssento[10];
+        this.posicao = 0;
     }
 
     @Override
-    public boolean inserir(VooAssento voo) {
-        if(this.posicao > vooAssentos.length) {return false;}
-        this.vooAssentos[this.posicao] = voo;
+    public boolean inserir(VooAssento vooAssento) {
+        if(this.posicao > this.vooAssentos.length) {return false;}
+        this.vooAssentos[this.posicao] = vooAssento;
         this.posicao++;
         return true;
     }
 
     @Override
-    public boolean atualizar(VooAssento voo, int idVooAssento) {
+    public boolean atualizar(VooAssento vooAssento, int idVooAssento) {
         if(idVooAssento >= this.posicao || idVooAssento < 0) {return false;}
-        this.vooAssentos[this.posicao] = voo;
+        this.vooAssentos[this.posicao] = vooAssento;
         return true;
     }
 
     @Override
     public boolean deletar(int idVooAssento) {
         if(idVooAssento < 0 || idVooAssento >= this.posicao) {return false;} //Verifica se o id fornecido não está fora das posições disponíveis do vetor
-        else if (idVooAssento == vooAssentos.length) { // Verifica se o id se refere a última posição disponível do vetor
+        else if (idVooAssento == this.vooAssentos.length) { // Verifica se o id se refere a última posição disponível do vetor
             this.vooAssentos[idVooAssento] = null;
         }
         else { // Movendo conteúdos das posições do vetor a partir do id a ser deletado para a esquerda, substituindo a posição deletada
@@ -48,7 +48,7 @@ public class VooAssentoDao implements VooAssentoDaoInterface {
     @Override
     public VooAssento buscar(int idVooAssento) {
         if (idVooAssento < 0 || idVooAssento >= this.posicao) {return null;}
-        return vooAssentos[idVooAssento];
+        return this.vooAssentos[idVooAssento];
     }
 
     @Override

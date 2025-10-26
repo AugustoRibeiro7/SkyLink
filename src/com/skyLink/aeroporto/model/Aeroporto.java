@@ -13,6 +13,7 @@ public class Aeroporto {
     public Aeroporto(int id, String nome, String cidade, String sigla, LocalDateTime dataCriacao, LocalDateTime dataAtualizacao) {
         this.id = id;
         this.nome = nome;
+        this.cidade = cidade;
         this.sigla = sigla;
         this.dataCriacao = LocalDateTime.now();
         this.dataAtualizacao = LocalDateTime.now();

@@ -14,9 +14,11 @@ import com.skyLink.aeroporto.view.MenuPrincipalView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
         // Cria DAOs em memória (tamanho fixo)
         PassageiroDao passageiroDao = new PassageiroDao(20);
@@ -52,6 +54,7 @@ public class Main {
         AeroportoController aeroportoController = new AeroportoController(aeroportoDao);
         CompanhiaAereaController companhiaAereaController = new CompanhiaAereaController(companhiaAereaDao);
         VooController vooController = new VooController(companhiaAereaDao); // Sem VooDao, pois é instanciado no VooController
+        TicketController ticketController = new TicketController(vooController, passageiroDao);
 
         // Login service e controller
         LoginService loginService = new LoginService(passageiroDao);
@@ -66,7 +69,9 @@ public class Main {
                 passageiroController,
                 aeroportoController,
                 companhiaAereaController,
-                vooController
+                vooController,
+                ticketController,
+                scanner
         );
 
         // Executa o menu

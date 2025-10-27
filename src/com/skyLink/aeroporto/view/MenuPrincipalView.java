@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class MenuPrincipalView {
 
-    private Scanner scanner = new Scanner(System.in);
+    private Scanner scanner;
 
     private LoginView loginView;
 
@@ -16,6 +16,8 @@ public class MenuPrincipalView {
     private CompanhiaAereaController companhiaAereaController;
     private VooController vooController;
     private VooView vooView;
+    private TicketController ticketController;
+    private TicketView ticketView;
 
     // CONSTRUTOR ATUALIZADO
     public MenuPrincipalView(
@@ -23,13 +25,16 @@ public class MenuPrincipalView {
             PassageiroController passageiroController,
             AeroportoController aeroportoController,
             CompanhiaAereaController companhiaAereaController,
-            VooController vooController) {
+            VooController vooController, TicketController ticketController, Scanner scanner) {
+        this.scanner=scanner;
         this.loginView = loginView;
         this.passageiroController = passageiroController;
         this.aeroportoController = aeroportoController;
         this.companhiaAereaController = companhiaAereaController;
         this.vooController = vooController;
+        this.ticketController = ticketController;
         this.vooView = new VooView(vooController); // Inicializa VooView
+        this.ticketView = new TicketView(ticketController, scanner);
     }
 
     public void exibirMenu() {
@@ -66,6 +71,7 @@ public class MenuPrincipalView {
     }
 
     private void exibirMenuUsuario(Passageiro usuario) {
+
         int opcao;
         do {
             System.out.println("\n=== MENU DO USUÁRIO ===");
@@ -74,6 +80,7 @@ public class MenuPrincipalView {
             System.out.println("2 - Gerenciar Companhias Aéreas");
             System.out.println("3 - Gerenciar Passageiros");
             System.out.println("4 - Gerenciar Voos");
+            System.out.println("5 - Gerenciar Passagens");
             System.out.println("0 - Logout");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -91,6 +98,9 @@ public class MenuPrincipalView {
                     break;
                 case 4:
                     vooView.exibirMenu(); // Chama o menu de voos
+                    break;
+                case 5:
+                    ticketView.exibirMenu(usuario);
                     break;
                 case 0:
                     System.out.println("Saindo do perfil...");

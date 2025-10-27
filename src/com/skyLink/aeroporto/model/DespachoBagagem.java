@@ -7,6 +7,7 @@ public class DespachoBagagem {
     private final int id;
     private int idTicket;
     private String documento;
+    private VooAssento vooAssento;
     private LocalDateTime dataCriacao; //ex.: "2025-10-12T15:45:00"
     private LocalDateTime dataModificacao;
 

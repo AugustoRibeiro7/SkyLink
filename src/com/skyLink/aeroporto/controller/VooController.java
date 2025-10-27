@@ -89,6 +89,20 @@ public class VooController {
         }
     }
 
+    public Voo[] getListaVoos() {
+        return service.listar();
+    }
+
+    public Voo buscarVooPorId(int id) {
+        Voo[] voos = service.listar();
+        for (Voo voo : voos) {
+            if (voo != null && voo.getId() == id) {
+                return voo;
+            }
+        }
+        throw new NoSuchElementException("Voo não encontrado com ID: " + id);
+    }
+
     public CompanhiaAerea[] listarCompanhiasAereas() {
         return companhiaDao.listarTodos();
     }

@@ -1,9 +1,6 @@
 package com.skyLink.aeroporto.view;
 
-import com.skyLink.aeroporto.controller.LoginController;
-import com.skyLink.aeroporto.controller.PassageiroController;
-import com.skyLink.aeroporto.controller.AeroportoController;
-import com.skyLink.aeroporto.controller.CompanhiaAereaController;
+import com.skyLink.aeroporto.controller.*;
 import com.skyLink.aeroporto.model.Passageiro;
 
 import java.util.Scanner;
@@ -17,17 +14,22 @@ public class MenuPrincipalView {
     private PassageiroController passageiroController;
     private AeroportoController aeroportoController;
     private CompanhiaAereaController companhiaAereaController;
+    private VooController vooController;
+    private VooView vooView;
 
     // CONSTRUTOR ATUALIZADO
     public MenuPrincipalView(
             LoginView loginView,
             PassageiroController passageiroController,
             AeroportoController aeroportoController,
-            CompanhiaAereaController companhiaAereaController) {
+            CompanhiaAereaController companhiaAereaController,
+            VooController vooController) {
         this.loginView = loginView;
         this.passageiroController = passageiroController;
         this.aeroportoController = aeroportoController;
         this.companhiaAereaController = companhiaAereaController;
+        this.vooController = vooController;
+        this.vooView = new VooView(vooController); // Inicializa VooView
     }
 
     public void exibirMenu() {
@@ -71,6 +73,7 @@ public class MenuPrincipalView {
             System.out.println("1 - Gerenciar Aeroportos");
             System.out.println("2 - Gerenciar Companhias Aéreas");
             System.out.println("3 - Gerenciar Passageiros");
+            System.out.println("4 - Gerenciar Voos");
             System.out.println("0 - Logout");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -85,6 +88,9 @@ public class MenuPrincipalView {
                     break;
                 case 3:
                     passageiroController.menuPassageiro();
+                    break;
+                case 4:
+                    vooView.exibirMenu(); // Chama o menu de voos
                     break;
                 case 0:
                     System.out.println("Saindo do perfil...");

@@ -1,9 +1,6 @@
 package com.skyLink.aeroporto;
 
-import com.skyLink.aeroporto.controller.LoginController;
-import com.skyLink.aeroporto.controller.PassageiroController;
-import com.skyLink.aeroporto.controller.AeroportoController;
-import com.skyLink.aeroporto.controller.CompanhiaAereaController;
+import com.skyLink.aeroporto.controller.*;
 
 import com.skyLink.aeroporto.dao.memory.PassageiroDao;
 import com.skyLink.aeroporto.dao.memory.AeroportoDao;
@@ -54,6 +51,7 @@ public class Main {
         PassageiroController passageiroController = new PassageiroController(passageiroDao);
         AeroportoController aeroportoController = new AeroportoController(aeroportoDao);
         CompanhiaAereaController companhiaAereaController = new CompanhiaAereaController(companhiaAereaDao);
+        VooController vooController = new VooController(companhiaAereaDao); // Sem VooDao, pois é instanciado no VooController
 
         // Login service e controller
         LoginService loginService = new LoginService(passageiroDao);
@@ -67,7 +65,8 @@ public class Main {
                 loginView,
                 passageiroController,
                 aeroportoController,
-                companhiaAereaController
+                companhiaAereaController,
+                vooController
         );
 
         // Executa o menu

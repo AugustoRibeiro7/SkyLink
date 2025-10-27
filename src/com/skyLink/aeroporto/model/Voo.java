@@ -3,7 +3,6 @@ package com.skyLink.aeroporto.model;
 import java.time.LocalDateTime;
 
 public class Voo {
-    private static int nextId = 1;
     private int id;
     private String origem;
     private String destino;
@@ -17,8 +16,7 @@ public class Voo {
 
     //Construtor
     public Voo(String origem, String destino, LocalDateTime dataVoo, int duracaoVoo,  CompanhiaAerea companhiaAerea,int capacidadeVoo) {
-        this.id = nextId++; //Inicializando ID único e sequencial
-
+        //this.id = id; Incrementado no VooDao
         this.origem = origem;
         this.destino = destino;
         this.dataVoo = dataVoo;
@@ -33,6 +31,9 @@ public class Voo {
     }
 
     //GETTERS e SETTERS
+    public void setId(int id) {
+        this.id = id;
+    }
     public int getId() {
         return id;
     }
@@ -63,6 +64,10 @@ public class Voo {
     }
     public void setDuracaoVoo(int duracaoVoo) {
         this.duracaoVoo = duracaoVoo;
+    }
+
+    public CompanhiaAerea getCompanhiaAerea() {
+        return companhiaAerea;
     }
 
     public int getCapacidadeVoo() {

@@ -6,6 +6,6 @@ public interface VooDaoInterface {
     abstract boolean inserir(Voo voo);
     abstract boolean atualizar(Voo voo, int identificador);
     abstract boolean deletar(int idVoo);
-    abstract Voo buscar(int idVoo);
+    abstract Voo[] buscar(String origem, String destino);
     abstract Voo[] listar();
 }

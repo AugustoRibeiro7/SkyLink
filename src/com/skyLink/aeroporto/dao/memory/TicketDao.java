@@ -56,6 +56,16 @@ public class TicketDao implements TicketDaoInterface {
     }
 
     @Override
+    public Ticket buscar(int idTicket) {
+        for (int i = 0; i < this.tamanho; i++) {
+            if (this.tickets[i] != null && this.tickets[i].getId() == idTicket) {
+                return this.tickets[i];
+            }
+        }
+        return null;
+    }
+
+    @Override
     public Ticket[] listar() {
         return Arrays.copyOf(tickets, tamanho);
     }

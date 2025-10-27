@@ -55,6 +55,7 @@ public class Main {
         CompanhiaAereaController companhiaAereaController = new CompanhiaAereaController(companhiaAereaDao);
         VooController vooController = new VooController(companhiaAereaDao); // Sem VooDao, pois é instanciado no VooController
         TicketController ticketController = new TicketController(vooController, passageiroDao);
+        CheckInController checkInController = new CheckInController(vooController, ticketController, passageiroDao);
 
         // Login service e controller
         LoginService loginService = new LoginService(passageiroDao);
@@ -66,12 +67,13 @@ public class Main {
         // Menu principal (passando os controllers)
         MenuPrincipalView menu = new MenuPrincipalView(
                 loginView,
+                scanner,
                 passageiroController,
                 aeroportoController,
                 companhiaAereaController,
                 vooController,
                 ticketController,
-                scanner
+                checkInController
         );
 
         // Executa o menu

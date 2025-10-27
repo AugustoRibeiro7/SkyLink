@@ -89,15 +89,15 @@ public class TicketController {
         }
     }
 
-    public Passageiro[] listarPassageiros() {
-        return passageiroDao.listarTodos();
-    }
-
-    public Passageiro buscarPassageiroPorId(int id) {
-        Passageiro passageiro = passageiroDao.buscarPorId(id);
-        if (passageiro == null) {
-            throw new NoSuchElementException("Passageiro não encontrado com ID: " + id);
+    public Ticket buscar(int idTicket) {
+        try {
+            Ticket ticket = this.service.buscar(idTicket);
+            if (ticket == null) {
+                throw new NoSuchElementException("Ticket não encontrado com ID: " + idTicket);
+            }
+            return ticket;
+        } catch (IllegalArgumentException e) {
+            throw new NoSuchElementException("Erro ao buscar ticket: " + e.getMessage());
         }
-        return passageiro;
     }
 }

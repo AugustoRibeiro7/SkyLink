@@ -8,4 +8,5 @@ public interface VooAssentoDaoInterface {
     abstract boolean deletar(int idVooAssento);
     abstract VooAssento buscar(int idVooAssento);
     abstract VooAssento[] listar();
+    abstract VooAssento buscarPorVooEPassageiro(int idVoo, int idPassageiro);
 }

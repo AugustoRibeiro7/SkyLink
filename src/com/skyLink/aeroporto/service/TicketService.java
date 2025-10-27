@@ -47,6 +47,13 @@ public class TicketService {
         return dao.deletar(idTicket);
     }
 
+    public Ticket buscar(int idTicket) {
+        if (idTicket <= 0) {
+            throw new IllegalArgumentException("ID do ticket deve ser positivo.");
+        }
+        return this.dao.buscar(idTicket);
+    }
+
     public Ticket[] listar() {
         return dao.listar();
     }

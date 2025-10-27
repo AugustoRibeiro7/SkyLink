@@ -17,15 +17,20 @@ public class MenuPrincipalView {
     private VooController vooController;
     private VooView vooView;
     private TicketController ticketController;
+    private CheckInController checkInController;
     private TicketView ticketView;
+    private CheckInView checkInView;
 
     // CONSTRUTOR ATUALIZADO
     public MenuPrincipalView(
             LoginView loginView,
+            Scanner scanner,
             PassageiroController passageiroController,
             AeroportoController aeroportoController,
             CompanhiaAereaController companhiaAereaController,
-            VooController vooController, TicketController ticketController, Scanner scanner) {
+            VooController vooController,
+            TicketController ticketController,
+            CheckInController checkInController) {
         this.scanner=scanner;
         this.loginView = loginView;
         this.passageiroController = passageiroController;
@@ -34,6 +39,8 @@ public class MenuPrincipalView {
         this.vooController = vooController;
         this.ticketController = ticketController;
         this.vooView = new VooView(vooController); // Inicializa VooView
+        this.checkInController = checkInController;
+        this.checkInView = new CheckInView(this.checkInController, this.scanner);
         this.ticketView = new TicketView(ticketController, scanner);
     }
 
@@ -81,6 +88,7 @@ public class MenuPrincipalView {
             System.out.println("3 - Gerenciar Passageiros");
             System.out.println("4 - Gerenciar Voos");
             System.out.println("5 - Gerenciar Passagens");
+            System.out.println("6 - Gerenciar Check-in");
             System.out.println("0 - Logout");
             System.out.print("Escolha uma opção: ");
             opcao = scanner.nextInt();
@@ -101,6 +109,9 @@ public class MenuPrincipalView {
                     break;
                 case 5:
                     ticketView.exibirMenu(usuario);
+                    break;
+                case 6:
+                    this.checkInView.exibirMenuCheckIn(usuario);
                     break;
                 case 0:
                     System.out.println("Saindo do perfil...");

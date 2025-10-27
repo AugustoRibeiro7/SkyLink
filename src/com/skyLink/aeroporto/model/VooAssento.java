@@ -3,7 +3,6 @@ package com.skyLink.aeroporto.model;
 import java.time.LocalDateTime;
 
 public class VooAssento {
-    private static int nextId = 1;
     private int id;
     private int codAssento;
     private int idVoo;
@@ -11,52 +10,68 @@ public class VooAssento {
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificacao;
 
-    //Construtor
-    public VooAssento() {
-        this.id = VooAssento.nextId; //Inicializando ID único e sequencial
-
-        //Inicializando com a data atual
+    // Construtor
+    public VooAssento(int id, int codAssento, int idVoo, int idPassageiro) {
+        this.id = id;
+        this.codAssento = codAssento;
+        this.idVoo = idVoo;
+        this.idPassageiro = idPassageiro;
         this.dataCriacao = LocalDateTime.now();
         this.dataModificacao = this.dataCriacao;
     }
 
-    //GETTERS AND SETTERS
-    public int getId(){
+    // Construtor vazio para DAO
+    public VooAssento() {
+        this.dataCriacao = LocalDateTime.now();
+        this.dataModificacao = this.dataCriacao;
+    }
+
+    // Getters e Setters
+    public int getId() {
         return this.id;
     }
 
-    public int getCodAssento(){
-        return this.getCodAssento();
+    public void setId(int id) {
+        this.id = id;
     }
-    public void setCodAssento(int codAssento){
+
+    public int getCodAssento() {
+        return this.codAssento;
+    }
+
+    public void setCodAssento(int codAssento) {
         this.codAssento = codAssento;
     }
 
-    public int getIdVoo(){
+    public int getIdVoo() {
         return this.idVoo;
     }
-    public void setIdVoo(int idVoo){
+
+    public void setIdVoo(int idVoo) {
         this.idVoo = idVoo;
     }
 
-    public int getIdPassageiro(){
+    public int getIdPassageiro() {
         return this.idPassageiro;
     }
-    public void setIdPassageiro(int idPassageiro){
+
+    public void setIdPassageiro(int idPassageiro) {
         this.idPassageiro = idPassageiro;
     }
 
-    public LocalDateTime getDataCriacao(){
+    public LocalDateTime getDataCriacao() {
         return this.dataCriacao;
     }
-    public void setDataCriacao(LocalDateTime dataCriacao){
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
-    public LocalDateTime getDataModificacao(){
+    public LocalDateTime getDataModificacao() {
         return this.dataModificacao;
     }
-    public void setDataModificacao(LocalDateTime dataModificacao){
+
+    public void setDataModificacao(LocalDateTime dataModificacao) {
         this.dataModificacao = dataModificacao;
     }
 }

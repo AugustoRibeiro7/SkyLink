@@ -3,16 +3,19 @@ package com.skyLink.aeroporto.dao.memory;
 import com.skyLink.aeroporto.dao.CheckInDaoInterface;
 import com.skyLink.aeroporto.model.CheckIn;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class CheckInDao implements CheckInDaoInterface {
     private CheckIn[] checkIns;
     private int tamanho;
     private int capacidade;
+    private int contId;
 
     public CheckInDao(int capacidade) {
         this.capacidade = capacidade;
         this.checkIns = new CheckIn[this.capacidade];
         this.tamanho = 0;
+        this.contId = 0;
     }
 
     @Override
@@ -20,7 +23,7 @@ public class CheckInDao implements CheckInDaoInterface {
         if (this.tamanho >= this.capacidade) {
             return false;
         }
-        checkIn.setId(this.tamanho + 1);
+        checkIn.setId(this.contId + 1);
         this.checkIns[this.tamanho] = checkIn;
         this.tamanho++;
         return true;
@@ -68,10 +71,6 @@ public class CheckInDao implements CheckInDaoInterface {
 
     @Override
     public CheckIn[] listar() {
-        CheckIn[] resultado = new CheckIn[this.tamanho];
-        for (int i = 0; i < this.tamanho; i++) {
-            resultado[i] = this.checkIns[i];
-        }
-        return resultado;
+        return Arrays.copyOf(this.checkIns, tamanho);
     }
 }

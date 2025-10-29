@@ -8,11 +8,13 @@ import java.util.Arrays;
 public class TicketDao implements TicketDaoInterface {
     private Ticket[] tickets;
     private int tamanho;
+    private int contId;
 
     //Construtor
     public TicketDao() { // Inicializando vetor e posicao
         this.tickets = new Ticket[10];
         this.tamanho = 0;
+        this.contId = 0;
     }
 
     @Override
@@ -23,7 +25,7 @@ public class TicketDao implements TicketDaoInterface {
          // Atribui ID sequencial (base 1..)
         tickets[tamanho] = ticket;
         tamanho++;
-        ticket.setId(tamanho);
+        ticket.setId(++this.contId);
         return true;
     }
 

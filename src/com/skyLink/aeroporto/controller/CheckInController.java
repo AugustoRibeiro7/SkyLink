@@ -81,4 +81,8 @@ public class CheckInController {
             System.out.println("Erro ao listar cartões de embarque: " + e.getMessage());
         }
     }
+
+    public void listarTickets() {
+         ticketController.listarTickets();
+    }
 }

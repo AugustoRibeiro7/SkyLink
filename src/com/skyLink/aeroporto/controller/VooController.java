@@ -24,7 +24,7 @@ public class VooController {
     public void adicionarVoo(String origem, String destino, LocalDateTime dataVoo, int duracaoVoo, CompanhiaAerea companhiaAerea, int capacidadeVoo) {
         try {
             service.adicionarVoo(origem, destino, dataVoo, duracaoVoo, companhiaAerea, capacidadeVoo);
-            System.out.println("Voo adicionado com sucesso! ID atribuído: " + service.listar().length);
+            System.out.println("Voo adicionado com sucesso!");
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao adicionar voo: " + e.getMessage());
         }

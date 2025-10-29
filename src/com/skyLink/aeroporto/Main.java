@@ -7,6 +7,7 @@ import com.skyLink.aeroporto.dao.memory.AeroportoDao;
 import com.skyLink.aeroporto.dao.memory.CompanhiaAereaDao;
 
 import com.skyLink.aeroporto.model.Aeroporto;
+import com.skyLink.aeroporto.model.CompanhiaAerea;
 import com.skyLink.aeroporto.model.Passageiro;
 import com.skyLink.aeroporto.service.LoginService;
 import com.skyLink.aeroporto.view.LoginView;
@@ -48,6 +49,10 @@ public class Main {
                 LocalDateTime.now()
         );
         aeroportoDao.salvar(aTeste);
+
+        //Popula Companhia aerea
+        CompanhiaAerea companhiaAerea = new CompanhiaAerea(1, "Asul", "AS", LocalDateTime.now(), LocalDateTime.now());
+        companhiaAereaDao.salvar(companhiaAerea);
 
         // Cria controllers (passando os DAOs)
         PassageiroController passageiroController = new PassageiroController(passageiroDao);

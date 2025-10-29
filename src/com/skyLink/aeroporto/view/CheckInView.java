@@ -50,6 +50,7 @@ public class CheckInView {
 
     private void realizarCheckIn(Passageiro passageiro) {
         try {
+            controller.listarTickets();
             System.out.print("Digite o ID do ticket: ");
             int idTicket = Integer.parseInt(this.scanner.nextLine());
             System.out.print("Digite o código do assento: ");

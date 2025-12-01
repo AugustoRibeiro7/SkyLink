@@ -1,6 +1,7 @@
 package com.skyLink.aeroporto.dao.memory;
 
 import com.skyLink.aeroporto.dao.VooDaoInterface;
+import com.skyLink.aeroporto.model.EstadoVooEnum;
 import com.skyLink.aeroporto.model.Voo;
 
 import java.time.LocalDateTime;
@@ -83,5 +84,10 @@ public class VooDao implements VooDaoInterface {
     @Override
     public Voo[] listar(){
         return Arrays.copyOf(voos, tamanho); // Retorna apenas as posições preenchidas;
+    }
+
+    @Override
+    public boolean atualizarEstado(int vooId, EstadoVooEnum novoEstado) {
+        return false;
     }
 }

@@ -28,3 +28,10 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+# Nunca subir senhas
+/src/database.properties
+
+# Drivers e bibliotecas externas
+/lib/
+/*.jar

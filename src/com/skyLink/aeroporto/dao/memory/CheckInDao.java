@@ -26,6 +26,7 @@ public class CheckInDao implements CheckInDaoInterface {
         checkIn.setId(this.contId + 1);
         this.checkIns[this.tamanho] = checkIn;
         this.tamanho++;
+        this.contId++;
         return true;
     }
 

@@ -2,58 +2,98 @@ package com.skyLink.aeroporto.dao.memory;
 
 import com.skyLink.aeroporto.dao.DespachoBagagemDaoInterface;
 import com.skyLink.aeroporto.model.DespachoBagagem;
+import java.time.LocalDateTime;
 
 public class DespachoBagagemDao implements DespachoBagagemDaoInterface {
-    DespachoBagagem[] despachosBagagem;
-    int posicao; //sempre estará um número maior do que a última posição do vetor com um objeto
+    private DespachoBagagem[] despachos;
+    private int tamanho;
+    private int capacidade;
+    private int contId;
 
-    //Construtor
-    public DespachoBagagemDao() { // Inicializando vetor e posicao
-        this.despachosBagagem = new DespachoBagagem[10];
-        this.posicao = 0;
+    public DespachoBagagemDao(int capacidade) {
+        this.capacidade = capacidade;
+        this.despachos = new DespachoBagagem[this.capacidade];
+        this.tamanho = 0;
+        this.contId = 0;
     }
 
     @Override
-    public boolean inserir(DespachoBagagem despachoBagagem) {
-        if(this.posicao > this.despachosBagagem.length) {return false;}
-        this.despachosBagagem[this.posicao] = despachoBagagem;
-        this.posicao++;
-        return true;
-    }
-
-    @Override
-    public boolean atualizar(DespachoBagagem despachoBagagem, int idDespachoBagagem) {
-        if(idDespachoBagagem >= this.posicao || idDespachoBagagem < 0) {return false;}
-        this.despachosBagagem[this.posicao] = despachoBagagem;
-        return true;
-    }
-
-    @Override
-    public boolean deletar(int idDespachoBagagem) {
-        if(idDespachoBagagem < 0 || idDespachoBagagem >= this.posicao) {return false;} //Verifica se o id fornecido não está fora das posições disponíveis do vetor
-        else if (idDespachoBagagem == this.despachosBagagem.length) { // Verifica se o id se refere a última posição disponível do vetor
-            this.despachosBagagem[idDespachoBagagem] = null;
+    public boolean inserir(DespachoBagagem despacho) {
+        if (this.tamanho >= this.capacidade) {
+            return false;
         }
-        else { // Movendo conteúdos das posições do vetor a partir do id a ser deletado para a esquerda, substituindo a posição deletada
-            for(int i = idDespachoBagagem; i < --this.posicao; i++) { //a "posicao" sempre está um valor maior que a posição do vetor atual preenchida, por isso o "--"
-                this.despachosBagagem[i] = this.despachosBagagem[i+1];
+        despacho.setId(this.contId + 1);
+        despacho.setDataCriacao(LocalDateTime.now());
+        despacho.setDataModificacao(despacho.getDataCriacao());
+        this.despachos[this.tamanho++] = despacho;
+        return true;
+    }
+
+    @Override
+    public boolean atualizar(DespachoBagagem despacho, int identificador) {
+        for (int i = 0; i < this.tamanho; i++) {
+            if (this.despachos[i] != null && this.despachos[i].getId() == identificador) {
+                despacho.setId(identificador);
+                despacho.setDataModificacao(LocalDateTime.now());
+                this.despachos[i] = despacho;
+                return true;
             }
-            this.despachosBagagem[--this.posicao] = null; // Apagando conteúdo da última posição, pois estará duplicado
         }
-        // Delete realizado com sucesso para casos que caiam no "else if" ou "else"
-        this.posicao--;
-        return true;
+        return false;
     }
 
     @Override
-    public DespachoBagagem buscar(int idDespachoBagagem) {
-        if (idDespachoBagagem < 0 || idDespachoBagagem >= this.posicao) {return null;}
-        return this.despachosBagagem[idDespachoBagagem];
+    public boolean deletar(int id) {
+        for (int i = 0; i < this.tamanho; i++) {
+            if (this.despachos[i] != null && this.despachos[i].getId() == id) {
+                this.despachos[i] = null;
+                for (int j = i; j < this.tamanho - 1; j++) {
+                    this.despachos[j] = this.despachos[j + 1];
+                }
+                this.despachos[this.tamanho - 1] = null;
+                this.tamanho--;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public DespachoBagagem buscar(int id) {
+        for (int i = 0; i < this.tamanho; i++) {
+            if (this.despachos[i] != null && this.despachos[i].getId() == id) {
+                return this.despachos[i];
+            }
+        }
+        return null;
     }
 
     @Override
     public DespachoBagagem[] listar() {
-        if(this.posicao == 0) {return null;} // se posição for 0, nenhum objeto foi incluído ainda no vetor
-        return this.despachosBagagem;
+        DespachoBagagem[] resultado = new DespachoBagagem[this.tamanho];
+        for (int i = 0; i < this.tamanho; i++) {
+            resultado[i] = this.despachos[i];
+        }
+        return resultado;
+    }
+
+    @Override
+    public DespachoBagagem[] listarPorTicket(int idTicket) {
+        int count = 0;
+        for (int i = 0; i < this.tamanho; i++) {
+            if (this.despachos[i] != null && this.despachos[i].getTicket().getId() == idTicket) {
+                count++;
+            }
+        }
+
+        DespachoBagagem[] resultado = new DespachoBagagem[count];
+        int index = 0;
+        for (int i = 0; i < this.tamanho; i++) {
+            if (this.despachos[i] != null && this.despachos[i].getTicket().getId() == idTicket) {
+                resultado[index] = this.despachos[i];
+                index++;
+            }
+        }
+        return resultado;
     }
 }

@@ -2,6 +2,7 @@ package com.skyLink.aeroporto.controller;
 
 import com.skyLink.aeroporto.dao.CompanhiaAereaDaoInterface;
 import com.skyLink.aeroporto.dao.VooDaoInterface;
+import com.skyLink.aeroporto.dao.db.VooDaoMysql;
 import com.skyLink.aeroporto.dao.memory.CompanhiaAereaDao;
 import com.skyLink.aeroporto.dao.memory.VooDao;
 import com.skyLink.aeroporto.model.CompanhiaAerea;
@@ -9,6 +10,7 @@ import com.skyLink.aeroporto.model.Voo;
 import com.skyLink.aeroporto.service.VooService;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.NoSuchElementException;
 
 public class VooController {
@@ -16,7 +18,7 @@ public class VooController {
     private final CompanhiaAereaDaoInterface companhiaDao;
 
     public VooController(CompanhiaAereaDaoInterface companhiaDao) {
-        VooDaoInterface dao = new VooDao();
+        VooDaoInterface dao = new VooDaoMysql();
         this.service = new VooService(dao);
         this.companhiaDao = companhiaDao;
     }
@@ -35,9 +37,15 @@ public class VooController {
             Voo[] voos = service.buscarVoos(origem, destino);
             System.out.println("Voos encontrados:");
             for (Voo voo : voos) {
-                System.out.printf("ID: %d, Origem: %s, Destino: %s, Data: %s, Duração: %d min, Companhia: %s (%s), Capacidade: %d%n",
-                        voo.getId(), voo.getOrigem(), voo.getDestino(), voo.getDataVoo(),
-                        voo.getDuracaoVoo(), voo.getCompanhiaAerea().getNome(), voo.getCompanhiaAerea().getSigla(), voo.getCapacidadeVoo());
+                System.out.printf("ID: %d | %s → %s | %s | %s (%s) | %d assentos | Estado: %s%n",
+                        voo.getId(),
+                        voo.getOrigem(),
+                        voo.getDestino(),
+                        voo.getDataVoo().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                        voo.getCompanhiaAerea().getNome(),
+                        voo.getCompanhiaAerea().getSigla(),
+                        voo.getCapacidadeVoo(),
+                        voo.getEstado());
             }
         } catch (IllegalArgumentException | IllegalStateException | NoSuchElementException e) {
             System.out.println("Erro ao buscar voos: " + e.getMessage());
@@ -71,6 +79,15 @@ public class VooController {
         }
     }
 
+    public void cancelarVoo(int idVoo) {
+        try {
+            service.cancelarVoo(idVoo);
+            System.out.println("Voo com ID " + idVoo + " cancelado com sucesso!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro ao cancelar voo: " + e.getMessage());
+        }
+    }
+
     public void listarVoos() {
         try {
             Voo[] voos = service.listar();
@@ -79,9 +96,15 @@ public class VooController {
             } else {
                 System.out.println("Lista de voos:");
                 for (Voo voo : voos) {
-                    System.out.printf("ID: %d, Origem: %s, Destino: %s, Data: %s, Duração: %d min, Companhia: %s (%s), Capacidade: %d%n",
-                            voo.getId(), voo.getOrigem(), voo.getDestino(), voo.getDataVoo(),
-                            voo.getDuracaoVoo(), voo.getCompanhiaAerea().getNome(), voo.getCompanhiaAerea().getSigla(), voo.getCapacidadeVoo());
+                    System.out.printf("ID: %d | %s → %s | %s | %s (%s) | %d assentos | Estado: %s%n",
+                            voo.getId(),
+                            voo.getOrigem(),
+                            voo.getDestino(),
+                            voo.getDataVoo().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+                            voo.getCompanhiaAerea().getNome(),
+                            voo.getCompanhiaAerea().getSigla(),
+                            voo.getCapacidadeVoo(),
+                            voo.getEstado());
                 }
             }
         } catch (IllegalStateException e) {

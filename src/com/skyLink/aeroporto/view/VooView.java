@@ -23,9 +23,10 @@ public class VooView {
             System.out.println("1. Adicionar voo");
             System.out.println("2. Buscar voos por origem e destino");
             System.out.println("3. Modificar voo");
-            System.out.println("4. Excluir voo");
-            System.out.println("5. Listar todos os voos");
-            System.out.println("6. Sair");
+            System.out.println("4. Cancelar voo");
+            System.out.println("5. Excluir voo");
+            System.out.println("6. Listar todos os voos");
+            System.out.println("7. Sair");
             System.out.print("Escolha uma opção: ");
 
             int opcao;
@@ -47,16 +48,19 @@ public class VooView {
                     modificarVoo();
                     break;
                 case 4:
-                    excluirVoo();
+                    cancelarVoo();
                     break;
                 case 5:
-                    listarVoos();
+                    excluirVoo();     // ← antigo 4 vira 5
                     break;
                 case 6:
+                    listarVoos();
+                    break;
+                case 7:
                     System.out.println("Saindo do sistema...");
-                    return; // Encerra o loop e o metodo
+                    return;
                 default:
-                    System.out.println("Erro: Opção inválida. Escolha entre 1 e 6.");
+                    System.out.println("Erro: Opção inválida. Escolha entre 1 e 7.");
             }
         }
     }
@@ -152,6 +156,18 @@ public class VooView {
         } catch (Exception e) {
             System.out.println("Erro ao modificar voo: " + e.getMessage());
         }
+    }
+
+    private void cancelarVoo() {
+        System.out.print("Digite o ID do voo a cancelar: ");
+        int idVoo;
+        try {
+            idVoo = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Erro: ID inválido. Use apenas números.");
+            return;
+        }
+        controller.cancelarVoo(idVoo);
     }
 
     private void excluirVoo() {

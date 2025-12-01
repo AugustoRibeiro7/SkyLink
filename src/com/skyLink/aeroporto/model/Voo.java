@@ -30,6 +30,12 @@ public class Voo {
         this.dataModificacao = this.dataCriacao;
     }
 
+    public Voo() {
+        this.estado = EstadoVooEnum.PROGRAMADO;
+        this.dataCriacao = LocalDateTime.now();
+        this.dataModificacao = this.dataCriacao;
+    }
+
     //GETTERS e SETTERS
     public void setId(int id) {
         this.id = id;
@@ -68,6 +74,9 @@ public class Voo {
 
     public CompanhiaAerea getCompanhiaAerea() {
         return companhiaAerea;
+    }
+    public void setCompanhiaAerea(CompanhiaAerea c) {
+        this.companhiaAerea = c;
     }
 
     public int getCapacidadeVoo() {

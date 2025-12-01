@@ -50,8 +50,8 @@ public class Main {
         );
         aeroportoDao.salvar(aTeste);
 
-        //Popula Companhia aerea
-        CompanhiaAerea companhiaAerea = new CompanhiaAerea(1, "Asul", "AS", LocalDateTime.now(), LocalDateTime.now());
+        //Popula Companhia aérea
+        CompanhiaAerea companhiaAerea = new CompanhiaAerea(1, "Azul", "AZU", LocalDateTime.now(), LocalDateTime.now());
         companhiaAereaDao.salvar(companhiaAerea);
 
         // Cria controllers (passando os DAOs)

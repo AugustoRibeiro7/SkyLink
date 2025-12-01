@@ -9,12 +9,18 @@ public class CompanhiaAerea {
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAtualizacao;
 
+    // Quando se cria manualmente
     public CompanhiaAerea(int id, String nome, String sigla, LocalDateTime dataCriacao, LocalDateTime dataAtualizacao) {
         this.id = id;
         this.nome = nome;
         this.sigla = sigla;
         this.dataCriacao = dataCriacao;
         this.dataAtualizacao = dataAtualizacao;
+    }
+
+    // Construtor vazio — para o DAO MySQL
+    public CompanhiaAerea() {
+        // DAO preenche com os setters
     }
 
     public int getId() {

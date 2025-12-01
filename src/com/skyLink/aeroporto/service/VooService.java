@@ -2,6 +2,7 @@ package com.skyLink.aeroporto.service;
 
 import com.skyLink.aeroporto.dao.VooDaoInterface;
 import com.skyLink.aeroporto.model.CompanhiaAerea;
+import com.skyLink.aeroporto.model.EstadoVooEnum;
 import com.skyLink.aeroporto.model.Voo;
 
 import java.time.LocalDateTime;
@@ -30,7 +31,26 @@ public class VooService {
     }
 
     public boolean excluir(int idVoo) {
-        return dao.deletar(idVoo);
+        try {
+            return dao.deletar(idVoo);
+        } catch (IllegalStateException e) {
+            if ("VOO_POSSUI_TICKETS".equals(e.getMessage())) {
+                throw new IllegalArgumentException("Não é possível excluir o voo porque já existem passagens vendidas.");
+            }
+            throw e;
+        }
+    }
+
+    public void cancelarVoo(int vooId) {
+        if (!dao.atualizarEstado(vooId, EstadoVooEnum.CANCELADO)) {
+            throw new IllegalArgumentException("Voo não encontrado ou já cancelado.");
+        }
+    }
+
+    public void colocarEmEmbarque(int vooId) {
+        if (!dao.atualizarEstado(vooId, EstadoVooEnum.EMBARQUE)) {
+            throw new IllegalArgumentException("Voo não encontrado.");
+        }
     }
 
     public Voo[] listar(){

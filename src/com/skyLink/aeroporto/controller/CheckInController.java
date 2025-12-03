@@ -14,20 +14,18 @@ import com.skyLink.aeroporto.model.Ticket;
 import com.skyLink.aeroporto.model.Voo;
 import com.skyLink.aeroporto.service.CheckInService;
 import com.skyLink.aeroporto.service.VooAssentoService;
+import com.skyLink.aeroporto.service.VooService;
 
 public class CheckInController {
     private final CheckInService service;
-    private final VooController vooController;
+    private final VooService vooService;
     private final TicketController ticketController;
     private final PassageiroDaoInterface passageiroDao;
 
-    public CheckInController(VooController vooController, TicketController ticketController, PassageiroDaoInterface passageiroDao) {
-        CheckInDaoInterface checkInDao = new CheckInDao(20);
-        CartaoEmbarqueDaoInterface cartaoEmbarqueDao = new CartaoEmbarqueDao(20);
-        VooAssentoDaoInterface vooAssentoDao = new VooAssentoDao(20);
-        VooAssentoService vooAssentoService = new VooAssentoService(vooAssentoDao);
-        this.service = new CheckInService(checkInDao, cartaoEmbarqueDao, vooAssentoService);
-        this.vooController = vooController;
+    // Construtor
+    public CheckInController(CheckInService checkInService,VooService vooService, TicketController ticketController, PassageiroDaoInterface passageiroDao) {
+        this.service = checkInService;
+        this.vooService = vooService;
         this.ticketController = ticketController;
         this.passageiroDao = passageiroDao;
     }
@@ -38,7 +36,7 @@ public class CheckInController {
             if (ticket == null) {
                 throw new IllegalArgumentException("Ticket não encontrado com ID: " + idTicket);
             }
-            Voo voo = this.vooController.buscarVooPorId(ticket.getVoo().getId());
+            Voo voo = this.vooService.buscarPorId(ticket.getVoo().getId());
             CartaoEmbarque cartao = this.service.realizarCheckIn(ticket, passageiro, voo, codAssento);
             System.out.println("Check-in realizado com sucesso! Cartão de embarque gerado: ID " + cartao.getId());
         } catch (Exception e) {

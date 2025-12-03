@@ -7,19 +7,20 @@ import com.skyLink.aeroporto.model.Passageiro;
 import com.skyLink.aeroporto.model.Ticket;
 import com.skyLink.aeroporto.model.Voo;
 import com.skyLink.aeroporto.service.TicketService;
+import com.skyLink.aeroporto.service.VooService;
 
 import java.util.NoSuchElementException;
 
 public class TicketController {
     private final TicketService service;
-    private final VooController vooController;
+    private final VooService vooService;
     private final PassageiroDaoInterface passageiroDao;
 
-    public TicketController(VooController vooController, PassageiroDaoInterface passageiroDao) {
-        TicketDaoInterface dao = new TicketDao();
-        this.service = new TicketService(dao);
-        this.vooController = vooController;
-        this.passageiroDao = passageiroDao;
+    //Construtor
+    public TicketController(TicketService ticketService, VooService vooService, PassageiroDaoInterface passageiroDao) {
+        this.service = ticketService;
+        this.vooService =  vooService;
+        this.passageiroDao = passageiroDao; //verificar por que tem esse passageiro aqui
     }
 
     public void comprarTicket(Double valor, Voo voo, Passageiro passageiro) {
@@ -77,12 +78,12 @@ public class TicketController {
     }
 
     public Voo[] listarVoos() {
-        return vooController.getListaVoos();
+        return vooService.listar();
     }
 
     public Voo buscarVooPorId(int id) {
         try {
-            return vooController.buscarVooPorId(id);
+            return vooService.buscarPorId(id);
         } catch (NoSuchElementException e) {
             System.out.println("Erro: " + e.getMessage());
             return null;

@@ -9,6 +9,7 @@ public class LoginView {
     private LoginController loginController;
     private Scanner scanner;
 
+    //Construtor
     public LoginView(LoginController loginController) {
         this.loginController = loginController;
         this.scanner = new Scanner(System.in);

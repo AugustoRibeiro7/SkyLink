@@ -6,6 +6,7 @@ import com.skyLink.aeroporto.model.EstadoVooEnum;
 import com.skyLink.aeroporto.model.Voo;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 public class VooService {
     private final VooDaoInterface dao;
@@ -24,6 +25,16 @@ public class VooService {
 
     public Voo[] buscarVoos(String origem, String destino) {
         return dao.buscar(origem, destino);
+    }
+
+    public Voo buscarPorId(int id) {
+        Voo[] voos = listar();
+        for (Voo voo : voos) {
+            if (voo != null && voo.getId() == id) {
+                return voo;
+            }
+        }
+        throw new NoSuchElementException("Voo não encontrado com ID: " + id);
     }
 
     public boolean modificar(Voo voo, int idVoo) {

@@ -1,47 +1,45 @@
 package com.skyLink.aeroporto.view;
 
 import com.skyLink.aeroporto.controller.*;
+import com.skyLink.aeroporto.dao.db.*;
 import com.skyLink.aeroporto.model.Passageiro;
+import com.skyLink.aeroporto.service.*;
 
 import java.util.Scanner;
 
 public class MenuPrincipalView {
 
-    private Scanner scanner;
+    private final Scanner scanner;
 
-    private LoginView loginView;
+    private final LoginView loginView;
+    private final VooView vooView;
+    private final CompanhiaAereaView companhiaAereaView;
+    private final TicketView ticketView;
+    private final CheckInView checkInView;
 
-    private PassageiroController passageiroController;
-    private AeroportoController aeroportoController;
-    private CompanhiaAereaController companhiaAereaController;
-    private VooController vooController;
-    private VooView vooView;
-    private TicketController ticketController;
-    private CheckInController checkInController;
-    private TicketView ticketView;
-    private CheckInView checkInView;
+    // Controllers que têm menu direto (sem View separada)
+    private final PassageiroController passageiroController;
+    private final AeroportoController aeroportoController;
 
-    // CONSTRUTOR ATUALIZADO
+    // Construtor
     public MenuPrincipalView(
             LoginView loginView,
-            Scanner scanner,
+            VooView vooView,
+            CompanhiaAereaView companhiaAereaView,
+            TicketView ticketView,
+            CheckInView checkInView,
             PassageiroController passageiroController,
             AeroportoController aeroportoController,
-            CompanhiaAereaController companhiaAereaController,
-            VooController vooController,
-            TicketController ticketController,
-            CheckInController checkInController) {
-        this.scanner=scanner;
+            Scanner scanner) {
+
         this.loginView = loginView;
+        this.vooView = vooView;
+        this.ticketView = ticketView;
+        this.checkInView = checkInView;
         this.passageiroController = passageiroController;
         this.aeroportoController = aeroportoController;
-        this.companhiaAereaController = companhiaAereaController;
-        this.vooController = vooController;
-        this.ticketController = ticketController;
-        this.vooView = new VooView(vooController); // Inicializa VooView
-        this.checkInController = checkInController;
-        this.checkInView = new CheckInView(this.checkInController, this.scanner);
-        this.ticketView = new TicketView(ticketController, scanner);
+        this.companhiaAereaView = companhiaAereaView;
+        this.scanner = scanner;
     }
 
     public void exibirMenu() {
@@ -54,8 +52,7 @@ public class MenuPrincipalView {
             System.out.println("2 - Login");
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
-            scanner.nextLine(); // limpa buffer
+            opcao = lerOpcao();
 
             switch (opcao) {
                 case 1:
@@ -63,7 +60,6 @@ public class MenuPrincipalView {
                     break;
                 case 2:
                     usuarioLogado = loginView.exibirLogin();
-
                     if (usuarioLogado != null) {
                         exibirMenuUsuario(usuarioLogado);
                     }
@@ -78,7 +74,6 @@ public class MenuPrincipalView {
     }
 
     private void exibirMenuUsuario(Passageiro usuario) {
-
         int opcao;
         do {
             System.out.println("\n=== MENU DO USUÁRIO ===");
@@ -91,35 +86,32 @@ public class MenuPrincipalView {
             System.out.println("6 - Gerenciar Check-in");
             System.out.println("0 - Logout");
             System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
-            scanner.nextLine();
+            opcao = lerOpcao();
 
             switch (opcao) {
-                case 1:
-                    aeroportoController.menuAeroporto();
-                    break;
-                case 2:
-                    companhiaAereaController.menuCompanhia();
-                    break;
-                case 3:
-                    passageiroController.menuPassageiro();
-                    break;
-                case 4:
-                    vooView.exibirMenu(); // Chama o menu de voos
-                    break;
-                case 5:
-                    ticketView.exibirMenu(usuario);
-                    break;
-                case 6:
-                    this.checkInView.exibirMenuCheckIn(usuario);
-                    break;
-                case 0:
-                    System.out.println("Saindo do perfil...");
-                    break;
-                default:
-                    System.out.println("Opção inválida!");
+                case 1 -> aeroportoController.menuAeroporto();
+                case 2 -> companhiaAereaView.exibirMenu();
+                case 3 -> passageiroController.menuPassageiro();
+                case 4 -> vooView.exibirMenu();
+                case 5 -> ticketView.exibirMenu(usuario);
+                case 6 -> checkInView.exibirMenuCheckIn(usuario);
+                case 0 -> System.out.println("Logout realizado com sucesso.");
+                default -> System.out.println("Opção inválida!");
             }
-
         } while (opcao != 0);
+    }
+
+    private int lerOpcao() {
+        String input = scanner.nextLine().trim();
+        if (input.isEmpty()) {
+            System.out.println("Nenhuma opção digitada.");
+            return -1;
+        }
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            System.out.println("Opção inválida. Digite apenas números.");
+            return -1;
+        }
     }
 }

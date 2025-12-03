@@ -7,6 +7,7 @@ public class LoginService {
 
     private PassageiroDao passageiroDao;
 
+    //Construtor
     public LoginService(PassageiroDao passageiroDao) {
         this.passageiroDao = passageiroDao;
     }

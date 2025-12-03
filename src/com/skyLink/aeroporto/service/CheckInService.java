@@ -16,6 +16,7 @@ public class CheckInService {
     private final CartaoEmbarqueDaoInterface cartaoEmbarqueDao;
     private final VooAssentoService vooAssentoService;
 
+    //Construtor
     public CheckInService(CheckInDaoInterface checkInDao, CartaoEmbarqueDaoInterface cartaoEmbarqueDao, VooAssentoService vooAssentoService) {
         this.checkInDao = checkInDao;
         this.cartaoEmbarqueDao = cartaoEmbarqueDao;

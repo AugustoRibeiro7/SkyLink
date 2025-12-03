@@ -8,4 +8,5 @@ public interface PassageiroDaoInterface {
     Passageiro[] listarTodos();
     void atualizar(Passageiro passageiro);
     void deletar(int id);
+    Passageiro buscarPorLogin(String login);
 }

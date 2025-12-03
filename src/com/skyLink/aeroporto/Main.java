@@ -13,7 +13,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         // 1. DAOs
-        var passageiroDao = new PassageiroDao(20);
+        var passageiroDao = new PassageiroDaoMysql();
         var aeroportoDao = new AeroportoDao(20);
         var companhiaDao = new CompanhiaAereaDaoMysql();
         var vooDao = new VooDaoMysql();
@@ -24,7 +24,7 @@ public class Main {
 
         // 2. Services
         var loginService = new LoginService(passageiroDao);
-        //var passageiroService = new PassageiroService(passageiroDao);
+        var passageiroService = new PassageiroService(passageiroDao);
         var companhiaService = new CompanhiaAereaService(companhiaDao);
         var vooService = new VooService(vooDao);
         var ticketService = new TicketService(ticketDao);
@@ -33,7 +33,7 @@ public class Main {
 
         // 3. Controllers
         var loginController = new LoginController(loginService);
-        var passageiroController = new PassageiroController(passageiroDao);
+        var passageiroController = new PassageiroController(passageiroService);
         var aeroportoController = new AeroportoController(aeroportoDao);
         var companhiaController = new CompanhiaAereaController(companhiaService);
         var vooController = new VooController(vooService, companhiaService);
@@ -42,6 +42,7 @@ public class Main {
 
         // 4. Views
         var loginView = new LoginView(loginController);
+        var passageiroView = new PassageiroView(passageiroController,scanner);
         var vooView = new VooView(vooController);
         var companhiaView = new CompanhiaAereaView(companhiaController);
         var ticketView = new TicketView(ticketController, scanner);
@@ -54,7 +55,7 @@ public class Main {
                 companhiaView,
                 ticketView,
                 checkInView,
-                passageiroController,
+                passageiroView,
                 aeroportoController,
                 scanner
         );

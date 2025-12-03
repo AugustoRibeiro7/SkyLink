@@ -13,6 +13,7 @@ public class Passageiro {
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAtualizacao;
 
+    //Construtor
     public Passageiro(int id, String nome, LocalDate nascimento, String documento,
                       String login, String senha,
                       LocalDateTime dataCriacao, LocalDateTime dataAtualizacao) {
@@ -24,6 +25,10 @@ public class Passageiro {
         this.senha = senha;
         this.dataCriacao = dataCriacao;
         this.dataAtualizacao = dataAtualizacao;
+    }
+
+    public Passageiro(){
+        // Construtor vazio para inserções com o set
     }
 
     // Getters e Setters

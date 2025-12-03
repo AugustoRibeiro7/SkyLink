@@ -16,9 +16,9 @@ public class MenuPrincipalView {
     private final CompanhiaAereaView companhiaAereaView;
     private final TicketView ticketView;
     private final CheckInView checkInView;
+    private final PassageiroView passageiroView;
 
     // Controllers que têm menu direto (sem View separada)
-    private final PassageiroController passageiroController;
     private final AeroportoController aeroportoController;
 
     // Construtor
@@ -28,7 +28,7 @@ public class MenuPrincipalView {
             CompanhiaAereaView companhiaAereaView,
             TicketView ticketView,
             CheckInView checkInView,
-            PassageiroController passageiroController,
+            PassageiroView passageiroView,
             AeroportoController aeroportoController,
             Scanner scanner) {
 
@@ -36,7 +36,7 @@ public class MenuPrincipalView {
         this.vooView = vooView;
         this.ticketView = ticketView;
         this.checkInView = checkInView;
-        this.passageiroController = passageiroController;
+        this.passageiroView = passageiroView;
         this.aeroportoController = aeroportoController;
         this.companhiaAereaView = companhiaAereaView;
         this.scanner = scanner;
@@ -56,7 +56,7 @@ public class MenuPrincipalView {
 
             switch (opcao) {
                 case 1:
-                    passageiroController.cadastrarPassageiro();
+                    passageiroView.exibirMenu();
                     break;
                 case 2:
                     usuarioLogado = loginView.exibirLogin();
@@ -91,7 +91,7 @@ public class MenuPrincipalView {
             switch (opcao) {
                 case 1 -> aeroportoController.menuAeroporto();
                 case 2 -> companhiaAereaView.exibirMenu();
-                case 3 -> passageiroController.menuPassageiro();
+                case 3 -> passageiroView.exibirMenu();
                 case 4 -> vooView.exibirMenu();
                 case 5 -> ticketView.exibirMenu(usuario);
                 case 6 -> checkInView.exibirMenuCheckIn(usuario);

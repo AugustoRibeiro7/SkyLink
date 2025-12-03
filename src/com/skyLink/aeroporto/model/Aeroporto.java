@@ -10,13 +10,16 @@ public class Aeroporto {
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAtualizacao;
 
-    public Aeroporto(int id, String nome, String cidade, String sigla, LocalDateTime dataCriacao, LocalDateTime dataAtualizacao) {
+    //Construtor
+    public Aeroporto(int id, String nome, String cidade, String sigla) {
         this.id = id;
         this.nome = nome;
         this.cidade = cidade;
         this.sigla = sigla;
-        this.dataCriacao = LocalDateTime.now();
-        this.dataAtualizacao = LocalDateTime.now();
+    }
+
+    public Aeroporto() {
+        // Inserção via set
     }
 
     public int getId() {
@@ -41,6 +44,13 @@ public class Aeroporto {
 
     public void setSigla(String sigla) {
         this.sigla = sigla;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
     }
 
     public LocalDateTime getDataCriacao() {

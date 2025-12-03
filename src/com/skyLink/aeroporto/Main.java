@@ -14,7 +14,7 @@ public class Main {
 
         // 1. DAOs
         var passageiroDao = new PassageiroDaoMysql();
-        var aeroportoDao = new AeroportoDao(20);
+        var aeroportoDao = new AeroportoDaoMysql();
         var companhiaDao = new CompanhiaAereaDaoMysql();
         var vooDao = new VooDaoMysql();
         var ticketDao = new TicketDao();
@@ -25,6 +25,7 @@ public class Main {
         // 2. Services
         var loginService = new LoginService(passageiroDao);
         var passageiroService = new PassageiroService(passageiroDao);
+        var aeroportoService = new AeroportoService(aeroportoDao);
         var companhiaService = new CompanhiaAereaService(companhiaDao);
         var vooService = new VooService(vooDao);
         var ticketService = new TicketService(ticketDao);
@@ -34,7 +35,7 @@ public class Main {
         // 3. Controllers
         var loginController = new LoginController(loginService);
         var passageiroController = new PassageiroController(passageiroService);
-        var aeroportoController = new AeroportoController(aeroportoDao);
+        var aeroportoController = new AeroportoController(aeroportoService);
         var companhiaController = new CompanhiaAereaController(companhiaService);
         var vooController = new VooController(vooService, companhiaService);
         var ticketController = new TicketController(ticketService, vooService, passageiroDao);
@@ -43,6 +44,7 @@ public class Main {
         // 4. Views
         var loginView = new LoginView(loginController);
         var passageiroView = new PassageiroView(passageiroController,scanner);
+        var aeroportoView = new AeroportoView(aeroportoController, scanner);
         var vooView = new VooView(vooController);
         var companhiaView = new CompanhiaAereaView(companhiaController);
         var ticketView = new TicketView(ticketController, scanner);
@@ -56,7 +58,7 @@ public class Main {
                 ticketView,
                 checkInView,
                 passageiroView,
-                aeroportoController,
+                aeroportoView,
                 scanner
         );
 

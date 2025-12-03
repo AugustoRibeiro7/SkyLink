@@ -17,9 +17,7 @@ public class MenuPrincipalView {
     private final TicketView ticketView;
     private final CheckInView checkInView;
     private final PassageiroView passageiroView;
-
-    // Controllers que têm menu direto (sem View separada)
-    private final AeroportoController aeroportoController;
+    private final AeroportoView aeroportoView;
 
     // Construtor
     public MenuPrincipalView(
@@ -29,7 +27,7 @@ public class MenuPrincipalView {
             TicketView ticketView,
             CheckInView checkInView,
             PassageiroView passageiroView,
-            AeroportoController aeroportoController,
+            AeroportoView aeroportoView,
             Scanner scanner) {
 
         this.loginView = loginView;
@@ -37,7 +35,7 @@ public class MenuPrincipalView {
         this.ticketView = ticketView;
         this.checkInView = checkInView;
         this.passageiroView = passageiroView;
-        this.aeroportoController = aeroportoController;
+        this.aeroportoView = aeroportoView;
         this.companhiaAereaView = companhiaAereaView;
         this.scanner = scanner;
     }
@@ -89,7 +87,7 @@ public class MenuPrincipalView {
             opcao = lerOpcao();
 
             switch (opcao) {
-                case 1 -> aeroportoController.menuAeroporto();
+                case 1 -> aeroportoView.exibirMenu();
                 case 2 -> companhiaAereaView.exibirMenu();
                 case 3 -> passageiroView.exibirMenu();
                 case 4 -> vooView.exibirMenu();

@@ -1,9 +1,7 @@
 package com.skyLink.aeroporto.service;
 
 import com.skyLink.aeroporto.dao.VooDaoInterface;
-import com.skyLink.aeroporto.model.CompanhiaAerea;
-import com.skyLink.aeroporto.model.EstadoVooEnum;
-import com.skyLink.aeroporto.model.Voo;
+import com.skyLink.aeroporto.model.*;
 
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
@@ -15,16 +13,18 @@ public class VooService {
         this.dao = dao;
     }
 
-    public void adicionarVoo(String origem, String destino, LocalDateTime dataVoo, int duracaoVoo, CompanhiaAerea companhiaAerea, int capacidadeVoo) {
-        if (origem.equalsIgnoreCase(destino)) { // Validando se origem e destino são iguais
-            throw new IllegalArgumentException("Origem e destino não podem ser iguais");
-        }
+    public void adicionarVoo(Aeroporto origem, Aeroporto destino, LocalDateTime dataVoo,
+                             int duracaoVoo, CompanhiaAerea companhiaAerea, int capacidadeVoo) {
+        validarVoo(origem, destino, dataVoo, duracaoVoo, capacidadeVoo);
+
         Voo voo = new Voo(origem, destino, dataVoo, duracaoVoo, companhiaAerea, capacidadeVoo);
-        dao.inserir(voo);
+        if (!dao.inserir(voo)) {
+            throw new RuntimeException("Falha ao inserir voo no banco de dados.");
+        }
     }
 
-    public Voo[] buscarVoos(String origem, String destino) {
-        return dao.buscar(origem, destino);
+    public Voo[] buscarVoos(String origemSigla, String destinoSigla) {
+        return dao.buscar(origemSigla.toUpperCase(), destinoSigla.toUpperCase());
     }
 
     public Voo buscarPorId(int id) {
@@ -37,18 +37,21 @@ public class VooService {
         throw new NoSuchElementException("Voo não encontrado com ID: " + id);
     }
 
-    public boolean modificar(Voo voo, int idVoo) {
-        return dao.atualizar(voo, idVoo);
+    public void modificarVoo(int idVoo, Aeroporto origem, Aeroporto destino, LocalDateTime dataVoo,
+                             int duracaoVoo, CompanhiaAerea companhia, int capacidade) {
+        validarVoo(origem, destino, dataVoo, duracaoVoo, capacidade);
+
+        Voo voo = new Voo(origem, destino, dataVoo, duracaoVoo, companhia, capacidade);
+        voo.setId(idVoo); // necessário pro DAO saber qual atualizar
+
+        if (!dao.atualizar(voo, idVoo)) {
+            throw new IllegalArgumentException("Voo não encontrado para modificação.");
+        }
     }
 
-    public boolean excluir(int idVoo) {
-        try {
-            return dao.deletar(idVoo);
-        } catch (IllegalStateException e) {
-            if ("VOO_POSSUI_TICKETS".equals(e.getMessage())) {
-                throw new IllegalArgumentException("Não é possível excluir o voo porque já existem passagens vendidas.");
-            }
-            throw e;
+    public void excluir(int idVoo) {
+        if (!dao.deletar(idVoo)) {
+            throw new IllegalArgumentException("Não é possível excluir o voo porque já existem passagens vendidas ou assentos reservados.");
         }
     }
 
@@ -64,8 +67,27 @@ public class VooService {
         }
     }
 
-    public Voo[] listar(){
+    public Voo[] listar() {
         Voo[] voos = dao.listar();
-        return voos != null ? voos : new Voo[0]; // Trata se null
+        return voos != null ? voos : new Voo[0];
+    }
+
+    private void validarVoo(Aeroporto origem, Aeroporto destino, LocalDateTime dataVoo,
+                            int duracaoVoo, int capacidadeVoo) {
+        if (origem == null || destino == null) {
+            throw new IllegalArgumentException("Origem e destino são obrigatórios.");
+        }
+        if (origem.getId() == destino.getId()) {
+            throw new IllegalArgumentException("Origem e destino não podem ser o mesmo aeroporto.");
+        }
+        if (dataVoo == null || dataVoo.isBefore(LocalDateTime.now().plusHours(1))) {
+            throw new IllegalArgumentException("Data do voo deve ser no futuro (mínimo 1h).");
+        }
+        if (duracaoVoo <= 0 || duracaoVoo > 1440) { // max 24h
+            throw new IllegalArgumentException("Duração do voo inválida (1 a 1440 minutos).");
+        }
+        if (capacidadeVoo < 50 || capacidadeVoo > 500) {
+            throw new IllegalArgumentException("Capacidade deve ser entre 50 e 500 assentos.");
+        }
     }
 }

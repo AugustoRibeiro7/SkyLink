@@ -1,12 +1,12 @@
 package com.skyLink.aeroporto.controller;
 
-import com.skyLink.aeroporto.model.CompanhiaAerea;
-import com.skyLink.aeroporto.model.Voo;
+import com.skyLink.aeroporto.model.*;
 import com.skyLink.aeroporto.service.CompanhiaAereaService;
 import com.skyLink.aeroporto.service.VooService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.NoSuchElementException;
 
 public class VooController {
@@ -14,30 +14,29 @@ public class VooController {
     private final VooService vooService;
     private final CompanhiaAereaService companhiaService;
 
-    //Construtor
     public VooController(VooService vooService, CompanhiaAereaService companhiaService) {
         this.vooService = vooService;
         this.companhiaService = companhiaService;
     }
 
-    public void adicionarVoo(String origem, String destino, LocalDateTime dataVoo,
-                             int duracaoVoo, CompanhiaAerea companhiaAerea, int capacidadeVoo) {
+    public void adicionarVoo(Aeroporto origem, Aeroporto destino, LocalDateTime dataVoo,
+                             int duracaoVoo, CompanhiaAerea companhia, int capacidadeVoo) {
         try {
-            vooService.adicionarVoo(origem, destino, dataVoo, duracaoVoo, companhiaAerea, capacidadeVoo);
+            vooService.adicionarVoo(origem, destino, dataVoo, duracaoVoo, companhia, capacidadeVoo);
             System.out.println("Voo adicionado com sucesso!");
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             System.out.println("Erro ao adicionar voo: " + e.getMessage());
         }
     }
 
-    public void buscarVoos(String origem, String destino) {
+    public void buscarVoos(String origemSigla, String destinoSigla) {
         try {
-            Voo[] voos = vooService.buscarVoos(origem, destino);
+            Voo[] voos = vooService.buscarVoos(origemSigla, destinoSigla);
             if (voos.length == 0) {
-                System.out.println("Nenhum voo encontrado para esse trecho.");
+                System.out.println("Nenhum voo encontrado de " + origemSigla + " para " + destinoSigla + ".");
                 return;
             }
-            System.out.println("Voos encontrados:");
+            System.out.println("Voos encontrados (" + origemSigla + " → " + destinoSigla + "):");
             for (Voo voo : voos) {
                 imprimirVoo(voo);
             }
@@ -46,30 +45,21 @@ public class VooController {
         }
     }
 
-    public void modificarVoo(String origem, String destino, LocalDateTime dataVoo,
-                             int duracaoVoo, CompanhiaAerea companhiaAerea, int capacidadeVoo, int idVoo) {
+    public void modificarVoo(int idVoo, Aeroporto origem, Aeroporto destino, LocalDateTime dataVoo,
+                             int duracaoVoo, CompanhiaAerea companhia, int capacidade) {
         try {
-            Voo voo = new Voo(origem, destino, dataVoo, duracaoVoo, companhiaAerea, capacidadeVoo);
-            boolean sucesso = vooService.modificar(voo, idVoo);
-            if (sucesso) {
-                System.out.println("Voo com ID " + idVoo + " modificado com sucesso!");
-            } else {
-                System.out.println("Falha ao modificar: voo não encontrado.");
-            }
-        } catch (IllegalArgumentException e) {
+            vooService.modificarVoo(idVoo, origem, destino, dataVoo, duracaoVoo, companhia, capacidade);
+            System.out.println("Voo ID " + idVoo + " modificado com sucesso!");
+        } catch (Exception e) {
             System.out.println("Erro ao modificar voo: " + e.getMessage());
         }
     }
 
     public void excluirVoo(int idVoo) {
         try {
-            boolean sucesso = vooService.excluir(idVoo);
-            if (sucesso) {
-                System.out.println("Voo com ID " + idVoo + " excluído com sucesso!");
-            } else {
-                System.out.println("Falha ao excluir: voo não encontrado.");
-            }
-        } catch (IllegalArgumentException e) {
+            vooService.excluir(idVoo);
+            System.out.println("Voo ID " + idVoo + " excluído com sucesso!");
+        } catch (Exception e) {
             System.out.println("Erro ao excluir voo: " + e.getMessage());
         }
     }
@@ -77,8 +67,8 @@ public class VooController {
     public void cancelarVoo(int idVoo) {
         try {
             vooService.cancelarVoo(idVoo);
-            System.out.println("Voo com ID " + idVoo + " cancelado com sucesso!");
-        } catch (IllegalArgumentException e) {
+            System.out.println("Voo ID " + idVoo + " cancelado com sucesso!");
+        } catch (Exception e) {
             System.out.println("Erro ao cancelar voo: " + e.getMessage());
         }
     }
@@ -90,24 +80,26 @@ public class VooController {
                 System.out.println("Nenhum voo cadastrado no sistema.");
                 return;
             }
-            System.out.println("Lista de voos:");
+            System.out.println("=== LISTA DE VOOS ===");
             for (Voo voo : voos) {
                 imprimirVoo(voo);
             }
         } catch (Exception e) {
             System.out.println("Erro ao listar voos: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    public Voo[] getListaVoos() {
-        return vooService.listar();
-    }
-
     public Voo buscarVooPorId(int id) {
-        return vooService.buscarPorId(id);
+        try {
+            return vooService.buscarPorId(id);
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
-    public CompanhiaAerea[] listarCompanhiasAereas() {
+    public CompanhiaAerea[] listarCompanhias() {
         return companhiaService.listarTodos();
     }
 
@@ -115,15 +107,24 @@ public class VooController {
         return companhiaService.buscarPorId(id);
     }
 
-    // Método auxiliar pra não repetir código
     private void imprimirVoo(Voo voo) {
-        System.out.printf("ID: %d | %s → %s | %s | %s (%s) | %d assentos | Estado: %s%n",
+        String origem = voo.getOrigem() != null
+                ? voo.getOrigem().getSigla() + " (" + voo.getOrigem().getCidade() + ")"
+                : "N/A";
+        String destino = voo.getDestino() != null
+                ? voo.getDestino().getSigla() + " (" + voo.getDestino().getCidade() + ")"
+                : "N/A";
+        String companhia = voo.getCompanhiaAerea() != null
+                ? voo.getCompanhiaAerea().getSigla() + " - " + voo.getCompanhiaAerea().getNome()
+                : "N/A";
+
+        System.out.printf("ID: %d | %s → %s | %s | %s | %d min | %d assentos | %s%n",
                 voo.getId(),
-                voo.getOrigem(),
-                voo.getDestino(),
+                origem,
+                destino,
+                companhia,
                 voo.getDataVoo().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
-                voo.getCompanhiaAerea().getNome(),
-                voo.getCompanhiaAerea().getSigla(),
+                voo.getDuracaoVoo(),
                 voo.getCapacidadeVoo(),
                 voo.getEstado());
     }

@@ -45,7 +45,7 @@ public class Main {
         var loginView = new LoginView(loginController);
         var passageiroView = new PassageiroView(passageiroController,scanner);
         var aeroportoView = new AeroportoView(aeroportoController, scanner);
-        var vooView = new VooView(vooController);
+        var vooView = new VooView(vooController, aeroportoController, companhiaController);
         var companhiaView = new CompanhiaAereaView(companhiaController);
         var ticketView = new TicketView(ticketController, scanner);
         var checkInView = new CheckInView(checkInController, scanner);

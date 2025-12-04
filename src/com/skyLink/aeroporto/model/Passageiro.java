@@ -10,12 +10,13 @@ public class Passageiro {
     private String documento;
     private String login;
     private String senha;
+    private Perfil perfil; // Campo Perfil
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAtualizacao;
 
-    //Construtor
+
     public Passageiro(int id, String nome, LocalDate nascimento, String documento,
-                      String login, String senha,
+                      String login, String senha, Perfil perfil,
                       LocalDateTime dataCriacao, LocalDateTime dataAtualizacao) {
         this.id = id;
         this.nome = nome;
@@ -23,15 +24,19 @@ public class Passageiro {
         this.documento = documento;
         this.login = login;
         this.senha = senha;
+        this.perfil = perfil; // Agora isso funciona porque o parâmetro existe acima
         this.dataCriacao = dataCriacao;
         this.dataAtualizacao = dataAtualizacao;
     }
 
-    public Passageiro(){
-        // Construtor vazio para inserções com o set
+    // --- CONSTRUTOR VAZIO ---
+    // Define o perfil padrão como CLIENTE para evitar erros em cadastros novos
+    public Passageiro() {
+        this.perfil = Perfil.CLIENTE;
     }
 
-    // Getters e Setters
+    // --- GETTERS E SETTERS ---
+
     public int getId() {
         return id;
     }
@@ -80,6 +85,14 @@ public class Passageiro {
         this.senha = senha;
     }
 
+    public Perfil getPerfil() {
+        return perfil;
+    }
+
+    public void setPerfil(Perfil perfil) {
+        this.perfil = perfil;
+    }
+
     public LocalDateTime getDataCriacao() {
         return dataCriacao;
     }
@@ -104,6 +117,7 @@ public class Passageiro {
                 ", nascimento=" + nascimento +
                 ", documento='" + documento + '\'' +
                 ", login='" + login + '\'' +
+                ", perfil=" + perfil +
                 ", dataCriacao=" + dataCriacao +
                 ", dataAtualizacao=" + dataAtualizacao +
                 '}';

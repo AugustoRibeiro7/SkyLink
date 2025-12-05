@@ -1,7 +1,6 @@
 package com.skyLink.aeroporto.service;
 
 import com.skyLink.aeroporto.dao.PassageiroDaoInterface;
-import com.skyLink.aeroporto.dao.memory.PassageiroDao;
 import com.skyLink.aeroporto.model.Passageiro;
 
 public class LoginService {

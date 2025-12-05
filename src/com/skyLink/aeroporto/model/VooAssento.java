@@ -4,74 +4,29 @@ import java.time.LocalDateTime;
 
 public class VooAssento {
     private int id;
-    private int codAssento;
-    private int idVoo;
-    private int idPassageiro;
+    private int vooId;
+    private String codigoAssento; // Ex: "1A"
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificacao;
 
-    // Construtor
-    public VooAssento(int id, int codAssento, int idVoo, int idPassageiro) {
-        this.id = id;
-        this.codAssento = codAssento;
-        this.idVoo = idVoo;
-        this.idPassageiro = idPassageiro;
-        this.dataCriacao = LocalDateTime.now();
-        this.dataModificacao = this.dataCriacao;
-    }
-
-    // Construtor vazio para DAO
-    public VooAssento() {
-        this.dataCriacao = LocalDateTime.now();
-        this.dataModificacao = this.dataCriacao;
-    }
-
     // Getters e Setters
-    public int getId() {
-        return this.id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public int getVooId() { return vooId; }
+    public void setVooId(int vooId) { this.vooId = vooId; }
 
-    public int getCodAssento() {
-        return this.codAssento;
-    }
+    public String getCodigoAssento() { return codigoAssento; }
+    public void setCodigoAssento(String codigoAssento) { this.codigoAssento = codigoAssento; }
 
-    public void setCodAssento(int codAssento) {
-        this.codAssento = codAssento;
-    }
+    public LocalDateTime getDataCriacao() { return dataCriacao; }
+    public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
 
-    public int getIdVoo() {
-        return this.idVoo;
-    }
+    public LocalDateTime getDataModificacao() { return dataModificacao; }
+    public void setDataModificacao(LocalDateTime dataModificacao) { this.dataModificacao = dataModificacao; }
 
-    public void setIdVoo(int idVoo) {
-        this.idVoo = idVoo;
-    }
-
-    public int getIdPassageiro() {
-        return this.idPassageiro;
-    }
-
-    public void setIdPassageiro(int idPassageiro) {
-        this.idPassageiro = idPassageiro;
-    }
-
-    public LocalDateTime getDataCriacao() {
-        return this.dataCriacao;
-    }
-
-    public void setDataCriacao(LocalDateTime dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    public LocalDateTime getDataModificacao() {
-        return this.dataModificacao;
-    }
-
-    public void setDataModificacao(LocalDateTime dataModificacao) {
-        this.dataModificacao = dataModificacao;
+    @Override
+    public String toString() {
+        return codigoAssento;
     }
 }

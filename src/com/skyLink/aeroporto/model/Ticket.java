@@ -1,89 +1,49 @@
 package com.skyLink.aeroporto.model;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 public class Ticket {
     private int id;
-    private Double valor;
-    private Voo voo;
+    private String codigo; // O localizador (Ex: "ABC12")
+    private double valor;
+    private Voo voo; // Objeto completo para acessar a data depois
     private Passageiro passageiro;
-    private String codigo;
+    private VooAssento assento;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataModificacao;
 
-    public Ticket(Double valor, Voo voo, Passageiro passageiro) {
-        if (valor == null || valor <= 0) {
-            throw new IllegalArgumentException("Valor deve ser positivo");
-        }
-        if (voo == null) {
-            throw new IllegalArgumentException("Voo não pode ser nulo");
-        }
-        if (passageiro == null) {
-            throw new IllegalArgumentException("Passageiro não pode ser nulo");
-        }
-        this.valor = valor;
+    // Construtores
+    public Ticket() {}
+
+    public Ticket(Voo voo, Passageiro passageiro, VooAssento assento, double valor) {
         this.voo = voo;
         this.passageiro = passageiro;
-        this.codigo = UUID.randomUUID().toString();
-        this.dataCriacao = LocalDateTime.now();
-        this.dataModificacao = this.dataCriacao;
+        this.assento = assento;
+        this.valor = valor;
     }
 
     // Getters e Setters
-    public int getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public String getCodigo() { return codigo; }
+    public void setCodigo(String codigo) { this.codigo = codigo; }
 
-    public Double getValor() {
-        return valor;
-    }
+    public double getValor() { return valor; }
+    public void setValor(double valor) { this.valor = valor; }
 
-    public void setValor(Double valor) {
-        if (valor == null || valor <= 0) {
-            throw new IllegalArgumentException("Valor deve ser positivo");
-        }
-        this.valor = valor;
-        this.dataModificacao = LocalDateTime.now();
-    }
+    public Voo getVoo() { return voo; }
+    public void setVoo(Voo voo) { this.voo = voo; }
 
-    public Voo getVoo() {
-        return voo;
-    }
+    public Passageiro getPassageiro() { return passageiro; }
+    public void setPassageiro(Passageiro passageiro) { this.passageiro = passageiro; }
 
-    public void setVoo(Voo voo) {
-        if (voo == null) {
-            throw new IllegalArgumentException("Voo não pode ser nulo");
-        }
-        this.voo = voo;
-        this.dataModificacao = LocalDateTime.now();
-    }
+    public VooAssento getAssento() { return assento; }
+    public void setAssento(VooAssento assento) { this.assento = assento; }
 
-    public Passageiro getPassageiro() {
-        return passageiro;
-    }
+    public LocalDateTime getDataCriacao() { return dataCriacao; }
+    public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
 
-    public void setPassageiro(Passageiro passageiro) {
-        if (passageiro == null) {
-            throw new IllegalArgumentException("Passageiro não pode ser nulo");
-        }
-        this.passageiro = passageiro;
-        this.dataModificacao = LocalDateTime.now();
-    }
-
-    public String getCodigo() {
-        return codigo;
-    }
-
-    public LocalDateTime getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public LocalDateTime getDataModificacao() {
-        return dataModificacao;
-    }
+    public LocalDateTime getDataModificacao() { return dataModificacao; }
+    public void setDataModificacao(LocalDateTime dataModificacao) { this.dataModificacao = dataModificacao; }
 }

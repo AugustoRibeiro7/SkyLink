@@ -17,7 +17,7 @@ public class MenuPrincipalView {
     private final PassageiroView passageiroView;
     private final AeroportoView aeroportoView;
 
-    // Construtor (Mantém igual, pois o Main já envia tudo isso)
+    // Construtor
     public MenuPrincipalView(
             LoginView loginView,
             VooView vooView,
@@ -57,7 +57,7 @@ public class MenuPrincipalView {
                 case 2:
                     usuarioLogado = loginView.exibirLogin();
                     if (usuarioLogado != null) {
-                        // AQUI ESTÁ A MÁGICA: Redireciona baseado no Perfil
+                        // Redireciona baseado no Perfil
                         direcionarMenuPorPerfil(usuarioLogado);
                     }
                     break;
@@ -82,7 +82,6 @@ public class MenuPrincipalView {
     }
 
     // === 1. MENU DO ADMINISTRADOR ===
-    // Pode gerenciar toda a infraestrutura (Aeroportos, Cias, Voos)
     private void exibirMenuAdmin(Passageiro admin) {
         int opcao;
         do {
@@ -107,7 +106,6 @@ public class MenuPrincipalView {
     }
 
     // === 2. MENU DO FUNCIONÁRIO ===
-    // Foca em operações de voo e check-in
     private void exibirMenuFuncionario(Passageiro func) {
         int opcao;
         do {
@@ -122,7 +120,7 @@ public class MenuPrincipalView {
             switch (opcao) {
                 case 1 -> vooView.exibirMenu(); // Funcionário pode ver e gerenciar voos
                 case 2 -> checkInView.exibirMenuCheckIn(func);
-                case 3 -> System.out.println("Funcionalidade de listar check-ins gerais em breve...");
+                case 3 -> checkInView.listarTodosCheckIns();
                 case 0 -> System.out.println("Saindo do painel funcionário...");
                 default -> System.out.println("Opção inválida!");
             }
@@ -130,7 +128,6 @@ public class MenuPrincipalView {
     }
 
     // === 3. MENU DO CLIENTE ===
-    // Apenas compra passagens e vê seus dados
     private void exibirMenuCliente(Passageiro cliente) {
         int opcao;
         do {

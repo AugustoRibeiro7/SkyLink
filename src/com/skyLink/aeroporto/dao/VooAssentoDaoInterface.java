@@ -1,12 +1,13 @@
+// src/com/skyLink/aeroporto/dao/VooAssentoDaoInterface.java
 package com.skyLink.aeroporto.dao;
 
 import com.skyLink.aeroporto.model.VooAssento;
+import java.util.List;
 
 public interface VooAssentoDaoInterface {
-    abstract boolean inserir(VooAssento vooAssento);
-    abstract boolean atualizar(VooAssento vooAssento, int identificador);
-    abstract boolean deletar(int idVooAssento);
-    abstract VooAssento buscar(int idVooAssento);
-    abstract VooAssento[] listar();
-    abstract VooAssento buscarPorVooEPassageiro(int idVoo, int idPassageiro);
+    boolean inserir(VooAssento assento);
+    List<VooAssento> listarPorVoo(int vooId);
+    VooAssento buscarPorId(int id);
+    boolean atualizar(VooAssento assento);
+    boolean deletarPorVoo(int vooId); // ao criar voo, gera assentos automaticamente
 }

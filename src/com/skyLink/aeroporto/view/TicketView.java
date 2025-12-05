@@ -4,7 +4,9 @@ import com.skyLink.aeroporto.controller.TicketController;
 import com.skyLink.aeroporto.model.Passageiro;
 import com.skyLink.aeroporto.model.Ticket;
 import com.skyLink.aeroporto.model.Voo;
+import com.skyLink.aeroporto.model.VooAssento;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -19,147 +21,127 @@ public class TicketView {
 
     public void exibirMenu(Passageiro passageiroLogado) {
         while (true) {
-            System.out.println("\n=== Sistema de Gerenciamento de Tickets ===");
-            System.out.println("1. Comprar ticket");
-            System.out.println("2. Atualizar ticket");
-            System.out.println("3. Excluir ticket");
-            System.out.println("4. Listar todos os tickets");
-            System.out.println("5. Sair");
-            System.out.print("Escolha uma opção: ");
+            System.out.println("\n=== Sistema de Compras / Tickets ===");
+            System.out.println("1. Comprar ticket (Escolher Voo e Assento)");
+            System.out.println("2. Listar meus tickets");
+            System.out.println("0. Voltar");
+            System.out.print("Escolha: ");
 
             int opcao;
             try {
                 opcao = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Erro: Opção inválida. Digite um número de 1 a 5.");
-                continue;
-            }
+            } catch (NumberFormatException e) { continue; }
 
             switch (opcao) {
                 case 1:
                     comprarTicket(passageiroLogado);
                     break;
                 case 2:
-                    atualizarTicket(passageiroLogado);
+                    listarMeusTickets(passageiroLogado);
                     break;
-                case 3:
-                    excluirTicket();
-                    break;
-                case 4:
-                    listarTickets();
-                    break;
-                case 5:
-                    System.out.println("Saindo do sistema de tickets...");
+                case 0:
                     return;
                 default:
-                    System.out.println("Erro: Opção inválida. Escolha entre 1 e 5.");
+                    System.out.println("Opção inválida.");
             }
         }
     }
 
     private void comprarTicket(Passageiro passageiroLogado) {
+        // 1. Selecionar Voo
         Voo voo = selecionarVoo();
-        if (voo == null) {
-            System.out.println("Operação cancelada: nenhum voo selecionado ou disponível.");
+        if (voo == null) return;
+
+        // 2. Selecionar Assento (CRUCIAL: Adicionei esta parte)
+        System.out.println("Buscando assentos disponíveis...");
+        List<VooAssento> assentos = controller.listarAssentosLivres(voo.getId());
+
+        if (assentos.isEmpty()) {
+            System.out.println("Voo lotado! Não há assentos disponíveis.");
             return;
         }
 
-        System.out.print("Digite o valor do ticket: ");
+        System.out.println("--- Assentos Livres ---");
+        for (VooAssento a : assentos) {
+            System.out.print("[" + a.getId() + ":" + a.getCodigoAssento() + "] ");
+        }
+        System.out.println();
+
+        System.out.print("Digite o ID do assento desejado: ");
+        int idAssento;
+        try {
+            idAssento = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("ID inválido.");
+            return;
+        }
+
+        // Busca o objeto assento real
+        VooAssento assentoSelecionado = null;
+        for(VooAssento a : assentos) {
+            if(a.getId() == idAssento) assentoSelecionado = a;
+        }
+
+        if (assentoSelecionado == null) {
+            System.out.println("Assento inválido ou não pertence a este voo.");
+            return;
+        }
+
+        // 3. Valor (Simulado, poderia vir do Voo)
+        System.out.print("Confirme o valor do ticket (ex: 150.00): ");
         Double valor;
         try {
             valor = Double.parseDouble(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("Erro: Valor inválido. Use apenas números.");
-            return;
-        }
+        } catch (NumberFormatException e) { return; }
 
+        // 4. Finalizar
         try {
-            controller.comprarTicket(valor, voo, passageiroLogado);
-            System.out.println("Ticket comprado para " + passageiroLogado.getNome() + " com sucesso!");
+            controller.comprarTicket(valor, voo, passageiroLogado, assentoSelecionado);
+            System.out.println("SUCESSO! Ticket comprado. Assento: " + assentoSelecionado.getCodigoAssento());
         } catch (Exception e) {
-            System.out.println("Erro ao comprar ticket: " + e.getMessage());
+            System.out.println("Erro ao comprar: " + e.getMessage());
         }
-    }
-
-    private void atualizarTicket(Passageiro passageiroLogado) {
-        System.out.print("Digite o ID do ticket a atualizar: ");
-        int idTicket;
-        try {
-            idTicket = Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("Erro: ID inválido. Use apenas números.");
-            return;
-        }
-
-        Voo voo = selecionarVoo();
-        if (voo == null) {
-            System.out.println("Operação cancelada: nenhum voo selecionado ou disponível.");
-            return;
-        }
-
-        System.out.print("Digite o novo valor do ticket: ");
-        Double valor;
-        try {
-            valor = Double.parseDouble(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("Erro: Valor inválido. Use apenas números.");
-            return;
-        }
-
-        try {
-            controller.atualizarTicket(valor, voo, passageiroLogado, idTicket);
-            System.out.println("Ticket atualizado para " + passageiroLogado.getNome() + " com sucesso!");
-        } catch (Exception e) {
-            System.out.println("Erro ao atualizar ticket: " + e.getMessage());
-        }
-    }
-
-    private void excluirTicket() {
-        System.out.print("Digite o ID do ticket a excluir: ");
-        int idTicket;
-        try {
-            idTicket = Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("Erro: ID inválido. Use apenas números.");
-            return;
-        }
-        controller.excluirTicket(idTicket);
-    }
-
-    private void listarTickets() {
-        controller.listarTickets();
     }
 
     private Voo selecionarVoo() {
         Voo[] voos = controller.listarVoos();
         if (voos.length == 0) {
-            System.out.println("Nenhum voo cadastrado no sistema. Cadastre um voo primeiro.");
+            System.out.println("Nenhum voo disponível.");
             return null;
         }
-
-        System.out.println("Voos disponíveis:");
-        for (Voo voo : voos) {
-            if (voo != null) {
-                System.out.printf("ID: %d, Origem: %s, Destino: %s, Data: %s, Duração: %d min, Companhia: %s (%s), Capacidade: %d%n",
-                        voo.getId(), voo.getOrigem(), voo.getDestino(), voo.getDataVoo(),
-                        voo.getDuracaoVoo(), voo.getCompanhiaAerea().getNome(), voo.getCompanhiaAerea().getSigla(), voo.getCapacidadeVoo());
-            }
+        System.out.println("--- Voos Disponíveis ---");
+        for (Voo v : voos) {
+            System.out.printf("ID: %d | %s -> %s | Data: %s%n",
+                    v.getId(), v.getOrigem().getSigla(), v.getDestino().getSigla(), v.getDataVoo());
         }
         System.out.print("Digite o ID do voo: ");
-        int idVoo;
         try {
-            idVoo = Integer.parseInt(scanner.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("Erro: ID inválido. Use apenas números.");
-            return null;
-        }
-
-        try {
-            return controller.buscarVooPorId(idVoo);
-        } catch (NoSuchElementException e) {
-            System.out.println("Erro: " + e.getMessage());
+            int id = Integer.parseInt(scanner.nextLine());
+            return controller.buscarVooPorId(id);
+        } catch (Exception e) {
+            System.out.println("Voo não encontrado.");
             return null;
         }
     }
 
+    private void listarMeusTickets(Passageiro passageiro) {
+        System.out.println("\n=== MEUS TICKETS ===");
+        List<Ticket> meusTickets = controller.listarMeusTickets(passageiro);
+
+        if (meusTickets.isEmpty()) {
+            System.out.println("Você ainda não comprou passagens.");
+            return;
+        }
+
+        for (Ticket t : meusTickets) {
+            // Exibe Código, Valor e Data
+            System.out.printf("CÓDIGO: %s | Voo: ID: %d | Assento: ID: %d | R$ %.2f | Data: %s%n",
+                    t.getCodigo(),
+                    t.getVoo().getId(),
+                    t.getAssento().getId(),
+                    t.getValor(),
+                    t.getDataCriacao() != null ? t.getDataCriacao().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) : "N/A"
+            );
+        }
+    }
 }

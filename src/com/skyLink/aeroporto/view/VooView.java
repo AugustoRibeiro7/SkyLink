@@ -83,7 +83,7 @@ public class VooView {
         int duracao = lerInteiroPositivo("Duração do voo em minutos (ex: 120)");
         if (duracao == -1) return;
 
-        int capacidade = lerInteiroPositivo("Capacidade total de assentos (50-500)");
+        int capacidade = lerInteiroPositivo("Capacidade total de assentos (5-100)");
         if (capacidade == -1) return;
 
         vooController.adicionarVoo(origem, destino, dataVoo, duracao, companhia, capacidade);

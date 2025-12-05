@@ -5,63 +5,19 @@ import java.time.LocalDateTime;
 public class CheckIn {
     private int id;
     private Ticket ticket;
-    private Passageiro passageiro;
-    private LocalDateTime dataCriacao;
-    private LocalDateTime dataModificacao;
+    private LocalDateTime dataCheckIn;
 
-    // Construtor
-    public CheckIn(int id, Ticket ticket, Passageiro passageiro) {
-        this.id = id;
-        this.ticket = ticket;
-        this.passageiro = passageiro;
-        this.dataCriacao = LocalDateTime.now();
-        this.dataModificacao = this.dataCriacao;
-    }
-
-    // Construtor vazio para DAO
     public CheckIn() {
-        this.dataCriacao = LocalDateTime.now();
-        this.dataModificacao = this.dataCriacao;
+        //vazio
     }
 
     // Getters e Setters
-    public int getId() {
-        return this.id;
-    }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public Ticket getTicket() { return ticket; }
+    public void setTicket(Ticket ticket) { this.ticket = ticket; }
 
-    public Ticket getTicket() {
-        return this.ticket;
-    }
-
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
-    }
-
-    public Passageiro getPassageiro() {
-        return this.passageiro;
-    }
-
-    public void setPassageiro(Passageiro passageiro) {
-        this.passageiro = passageiro;
-    }
-
-    public LocalDateTime getDataCriacao() {
-        return this.dataCriacao;
-    }
-
-    public void setDataCriacao(LocalDateTime dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    public LocalDateTime getDataModificacao() {
-        return this.dataModificacao;
-    }
-
-    public void setDataModificacao(LocalDateTime dataModificacao) {
-        this.dataModificacao = dataModificacao;
-    }
+    public LocalDateTime getDataCheckIn() { return dataCheckIn; }
+    public void setDataCheckIn(LocalDateTime dataCheckIn) { this.dataCheckIn = dataCheckIn; }
 }

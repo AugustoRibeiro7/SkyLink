@@ -1,63 +1,80 @@
 package com.skyLink.aeroporto.service;
 
-import com.skyLink.aeroporto.dao.CheckInDaoInterface;
-import com.skyLink.aeroporto.dao.CartaoEmbarqueDaoInterface;
-import com.skyLink.aeroporto.model.CheckIn;
+import com.skyLink.aeroporto.dao.db.CartaoEmbarqueDaoMysql;
+import com.skyLink.aeroporto.dao.db.CheckInDaoMysql;
 import com.skyLink.aeroporto.model.CartaoEmbarque;
+import com.skyLink.aeroporto.model.CheckIn;
 import com.skyLink.aeroporto.model.Passageiro;
 import com.skyLink.aeroporto.model.Ticket;
-import com.skyLink.aeroporto.model.Voo;
-import com.skyLink.aeroporto.model.VooAssento;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 public class CheckInService {
-    private final CheckInDaoInterface checkInDao;
-    private final CartaoEmbarqueDaoInterface cartaoEmbarqueDao;
-    private final VooAssentoService vooAssentoService;
+    private final CheckInDaoMysql checkInDao;
+    private final CartaoEmbarqueDaoMysql cartaoDao;
 
-    //Construtor
-    public CheckInService(CheckInDaoInterface checkInDao, CartaoEmbarqueDaoInterface cartaoEmbarqueDao, VooAssentoService vooAssentoService) {
+    public CheckInService(CheckInDaoMysql checkInDao, CartaoEmbarqueDaoMysql cartaoDao) {
         this.checkInDao = checkInDao;
-        this.cartaoEmbarqueDao = cartaoEmbarqueDao;
-        this.vooAssentoService = vooAssentoService;
+        this.cartaoDao = cartaoDao;
     }
 
-    public CartaoEmbarque realizarCheckIn(Ticket ticket, Passageiro passageiro, Voo voo, int codAssento) {
-        if (ticket == null || passageiro == null || voo == null) {
-            throw new IllegalArgumentException("Ticket, passageiro e voo não podem ser nulos.");
+    public CartaoEmbarque realizarCheckIn(Ticket ticket) {
+        // 1. Regra de Negócio: Validação de data e hora
+        LocalDateTime agora = LocalDateTime.now();
+
+        // Garante que a data do voo foi carregada (evita NullPointerException)
+        if (ticket.getVoo() == null || ticket.getVoo().getDataVoo() == null) {
+            throw new IllegalArgumentException("Dados do voo não foram carregados corretamente.");
         }
-        if (ticket.getPassageiro().getId() != passageiro.getId() || ticket.getVoo().getId() != voo.getId()) {
-            throw new IllegalArgumentException("Ticket não corresponde ao passageiro ou voo fornecido.");
+
+        LocalDateTime dataVoo = ticket.getVoo().getDataVoo();
+
+        // Se o voo já partiu
+        if (agora.isAfter(dataVoo)) {
+            throw new IllegalArgumentException("Voo já partiu. Check-in encerrado.");
         }
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime limiteCheckIn = voo.getDataVoo().minusHours(24);
-        if (now.isBefore(limiteCheckIn)) {
-            throw new IllegalArgumentException("Check-in só pode ser feito 24 horas antes do voo.");
+
+        // Se faltam mais de 24h
+        long horasRestantes = ChronoUnit.HOURS.between(agora, dataVoo);
+        if (horasRestantes > 24) {
+            throw new IllegalArgumentException("Check-in disponível apenas 24h antes do voo. Faltam: " + horasRestantes + " horas.");
         }
-        // Criar assento
-        if (!this.vooAssentoService.adicionarAssento(codAssento, voo.getId(), passageiro.getId())) {
-            throw new IllegalStateException("Falha ao criar assento para o passageiro.");
+
+        // 2. Persistir Check-in
+        CheckIn checkIn = new CheckIn();
+        checkIn.setTicket(ticket);
+        checkIn.setDataCheckIn(agora);
+
+        // Tenta salvar no banco
+        if (!checkInDao.inserir(checkIn)) {
+            // Se falhar, pode ser que já exista um check-in para este ticket (chave única no banco)
+            throw new RuntimeException("Erro ao registrar check-in ou check-in já realizado.");
         }
-        VooAssento vooAssento = this.vooAssentoService.buscarPorVooEPassageiro(voo.getId(), passageiro.getId());
-        // Criar check-in
-        CheckIn checkIn = new CheckIn(0, ticket, passageiro);
-        if (!this.checkInDao.inserir(checkIn)) {
-            throw new IllegalStateException("Falha ao inserir check-in.");
-        }
-        // Gerar cartão de embarque
-        CartaoEmbarque cartao = new CartaoEmbarque(0, passageiro, voo, ticket, vooAssento);
-        if (!this.cartaoEmbarqueDao.inserir(cartao)) {
-            throw new IllegalStateException("Falha ao inserir cartão de embarque.");
-        }
+
+        // 3. Gerar Cartão de Embarque automaticamente
+        CartaoEmbarque cartao = new CartaoEmbarque();
+        cartao.setCheckIn(checkIn);
+        cartao.setPortao(gerarPortaoAleatorio());
+        cartao.setDataEmissao(agora);
+
+        cartaoDao.inserir(cartao);
+
         return cartao;
     }
 
-    public CheckIn[] listar() {
-        return this.checkInDao.listar();
+    public List<CheckIn> listarTodos() {
+        return checkInDao.listarTodosDetelhado();
     }
 
-    public CartaoEmbarque[] listarCartoes() {
-        return this.cartaoEmbarqueDao.listar();
+    public List<CartaoEmbarque> listarCartoesPorPassageiro(Passageiro passageiro) {
+        return cartaoDao.listarPorPassageiro(passageiro.getId());
+    }
+
+    private String gerarPortaoAleatorio() {
+        // Gera um portão entre G1 e G20
+        int numero = (int) (Math.random() * 20) + 1;
+        return "G" + numero;
     }
 }

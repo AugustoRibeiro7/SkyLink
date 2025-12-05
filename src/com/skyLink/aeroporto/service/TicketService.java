@@ -1,60 +1,49 @@
 package com.skyLink.aeroporto.service;
 
-import com.skyLink.aeroporto.dao.TicketDaoInterface;
-import com.skyLink.aeroporto.model.Ticket;
-import com.skyLink.aeroporto.model.Voo;
+import com.skyLink.aeroporto.dao.db.TicketDaoMysql;
 import com.skyLink.aeroporto.model.Passageiro;
+import com.skyLink.aeroporto.model.Ticket;
+import com.skyLink.aeroporto.model.VooAssento;
+
+import java.util.Collections;
+import java.util.List;
 
 public class TicketService {
-    private final TicketDaoInterface dao;
+    private final TicketDaoMysql dao;
+    private final VooAssentoService assentoService;
 
-    public TicketService(TicketDaoInterface dao) {
+    public TicketService(TicketDaoMysql dao, VooAssentoService assentoService) {
         this.dao = dao;
+        this.assentoService = assentoService;
     }
 
-    public void comprarTicket(Double valor, Voo voo, Passageiro passageiro) {
-        if (valor == null || valor <= 0) {
-            throw new IllegalArgumentException("Valor deve ser positivo");
+    public void comprarTicket(Ticket ticket) {
+        // Validações básicas
+        if (ticket.getVoo() == null || ticket.getPassageiro() == null) {
+            throw new IllegalArgumentException("Dados incompletos para compra.");
         }
-        if (voo == null) {
-            throw new IllegalArgumentException("Voo não pode ser nulo");
+
+        // Verifica se o assento ainda está livre (redundância de segurança)
+        VooAssento assento = assentoService.buscarPorId(ticket.getAssento().getId());
+        if (assento == null) {
+            throw new IllegalArgumentException("Assento inválido.");
         }
+
+        // Tenta inserir
+        if (!dao.inserir(ticket)) {
+            throw new RuntimeException("Não foi possível processar a compra.");
+        }
+    }
+
+    public Ticket buscarPorCodigo(String codigo) {
+        return dao.buscarPorCodigo(codigo);
+    }
+
+    public List<Ticket> listarTicketsPorPassageiro(Passageiro passageiro) {
         if (passageiro == null) {
-            throw new IllegalArgumentException("Passageiro não pode ser nulo");
+            return Collections.emptyList();
         }
-        Ticket ticket = new Ticket(valor, voo, passageiro);
-        dao.inserir(ticket);
-    }
 
-    public boolean atualizarTicket(Double valor, Voo voo, Passageiro passageiro, int idTicket) {
-        if (valor == null || valor <= 0) {
-            throw new IllegalArgumentException("Valor deve ser positivo");
-        }
-        if (voo == null) {
-            throw new IllegalArgumentException("Voo não pode ser nulo");
-        }
-        if (passageiro == null) {
-            throw new IllegalArgumentException("Passageiro não pode ser nulo");
-        }
-        Ticket ticket = new Ticket(valor, voo, passageiro);
-        return dao.atualizar(ticket, idTicket);
-    }
-
-    public boolean excluir(int idTicket) {
-        if (idTicket <= 0) {
-            throw new IllegalArgumentException("ID do ticket deve ser positivo");
-        }
-        return dao.deletar(idTicket);
-    }
-
-    public Ticket buscar(int idTicket) {
-        if (idTicket <= 0) {
-            throw new IllegalArgumentException("ID do ticket deve ser positivo.");
-        }
-        return this.dao.buscar(idTicket);
-    }
-
-    public Ticket[] listar() {
-        return dao.listar();
+        return dao.listarPorPassageiro(passageiro.getId());
     }
 }

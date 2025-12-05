@@ -1,104 +1,59 @@
 package com.skyLink.aeroporto.controller;
 
-import com.skyLink.aeroporto.dao.PassageiroDaoInterface;
-import com.skyLink.aeroporto.dao.TicketDaoInterface;
-import com.skyLink.aeroporto.dao.memory.TicketDao;
-import com.skyLink.aeroporto.model.Passageiro;
-import com.skyLink.aeroporto.model.Ticket;
-import com.skyLink.aeroporto.model.Voo;
+import com.skyLink.aeroporto.model.*;
 import com.skyLink.aeroporto.service.TicketService;
 import com.skyLink.aeroporto.service.VooService;
+import com.skyLink.aeroporto.service.VooAssentoService; // Importante
 
-import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TicketController {
-    private final TicketService service;
+    private final TicketService ticketService;
     private final VooService vooService;
-    private final PassageiroDaoInterface passageiroDao;
+    private final VooAssentoService assentoService;
 
-    //Construtor
-    public TicketController(TicketService ticketService, VooService vooService, PassageiroDaoInterface passageiroDao) {
-        this.service = ticketService;
-        this.vooService =  vooService;
-        this.passageiroDao = passageiroDao; //verificar por que tem esse passageiro aqui
-    }
-
-    public void comprarTicket(Double valor, Voo voo, Passageiro passageiro) {
-        try {
-            service.comprarTicket(valor, voo, passageiro);
-            System.out.println("Ticket comprado com sucesso! ID: " + service.listar().length);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erro ao comprar ticket: " + e.getMessage());
-        }
-    }
-
-    public void atualizarTicket(Double valor, Voo voo, Passageiro passageiro, int idTicket) {
-        try {
-            boolean sucesso = service.atualizarTicket(valor, voo, passageiro, idTicket);
-            if (sucesso) {
-                System.out.println("Ticket com ID " + idTicket + " atualizado com sucesso!");
-            } else {
-                System.out.println("Falha ao atualizar ticket com ID " + idTicket + ": ID inválido ou não encontrado.");
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erro ao atualizar ticket: " + e.getMessage());
-        }
-    }
-
-    public void excluirTicket(int idTicket) {
-        try {
-            boolean sucesso = service.excluir(idTicket);
-            if (sucesso) {
-                System.out.println("Ticket com ID " + idTicket + " excluído com sucesso!");
-            } else {
-                System.out.println("Falha ao excluir ticket com ID " + idTicket + ": ID inválido ou não encontrado.");
-            }
-        } catch (IllegalArgumentException e) {
-            System.out.println("Erro ao excluir ticket: " + e.getMessage());
-        }
-    }
-
-    public void listarTickets() {
-        try {
-            Ticket[] tickets = service.listar();
-            if (tickets.length == 0) {
-                System.out.println("Nenhum ticket cadastrado no sistema.");
-            } else {
-                System.out.println("Lista de tickets:");
-                for (Ticket ticket : tickets) {
-                    System.out.printf("ID: %d, Código: %s, Valor: %.2f, Voo ID: %d, Passageiro: %s, Data Criação: %s%n",
-                            ticket.getId(), ticket.getCodigo(), ticket.getValor(),
-                            ticket.getVoo().getId(), ticket.getPassageiro().getNome(),
-                            ticket.getDataCriacao());
-                }
-            }
-        } catch (IllegalStateException e) {
-            System.out.println("Erro ao listar tickets: " + e.getMessage());
-        }
+    public TicketController(TicketService ticketService, VooService vooService, VooAssentoService assentoService) {
+        this.ticketService = ticketService;
+        this.vooService = vooService;
+        this.assentoService = assentoService;
     }
 
     public Voo[] listarVoos() {
-        return vooService.listar();
+        return vooService.listar(); // Retorna array para atender sua view
     }
 
     public Voo buscarVooPorId(int id) {
+        return vooService.buscarPorId(id);
+    }
+
+    // Retorna a lista de assentos livres para mostrar no menu
+    public List<VooAssento> listarAssentosLivres(int vooId) {
+        return assentoService.listarLivres(vooId);
+    }
+
+    public VooAssento buscarAssento(int id) {
+        return assentoService.buscarPorId(id);
+    }
+
+    public void comprarTicket(Double valor, Voo voo, Passageiro passageiro, VooAssento assento) {
         try {
-            return vooService.buscarPorId(id);
-        } catch (NoSuchElementException e) {
-            System.out.println("Erro: " + e.getMessage());
-            return null;
+            Ticket ticket = new Ticket(voo, passageiro, assento, valor);
+            ticketService.comprarTicket(ticket); // O Service gera o código e salva
+        } catch (Exception e) {
+            throw new RuntimeException("Erro no controller: " + e.getMessage());
         }
     }
 
-    public Ticket buscar(int idTicket) {
+    public List<Ticket> listarMeusTickets(Passageiro passageiro) {
         try {
-            Ticket ticket = this.service.buscar(idTicket);
-            if (ticket == null) {
-                throw new NoSuchElementException("Ticket não encontrado com ID: " + idTicket);
-            }
-            return ticket;
-        } catch (IllegalArgumentException e) {
-            throw new NoSuchElementException("Erro ao buscar ticket: " + e.getMessage());
+            return ticketService.listarTicketsPorPassageiro(passageiro);
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar tickets: " + e.getMessage());
+            return new ArrayList<>(); // Retorna lista vazia para não quebrar a tela
         }
     }
+
+    public void atualizarTicket(Double v, Voo voo, Passageiro p, int id) { /* Implementar atualização */ }
+    public void excluirTicket(int id) { /* Implementar exclusão */ }
 }

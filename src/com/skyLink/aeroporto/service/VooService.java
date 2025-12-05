@@ -86,8 +86,8 @@ public class VooService {
         if (duracaoVoo <= 0 || duracaoVoo > 1440) { // max 24h
             throw new IllegalArgumentException("Duração do voo inválida (1 a 1440 minutos).");
         }
-        if (capacidadeVoo < 50 || capacidadeVoo > 500) {
-            throw new IllegalArgumentException("Capacidade deve ser entre 50 e 500 assentos.");
+        if (capacidadeVoo < 5 || capacidadeVoo > 100) {
+            throw new IllegalArgumentException("Capacidade deve ser entre 5 e 100 assentos.");
         }
     }
 }
